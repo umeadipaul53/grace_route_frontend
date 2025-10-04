@@ -1,0 +1,41 @@
+import React from "react";
+
+const Inspection = () => {
+  return (
+    <section className="relative w-full bg-green-950 overflow-hidden">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between px-6 md:px-12 py-10">
+        {/* Left / Text block */}
+        <div className="text-center md:text-left flex-1">
+          <h4 className="text-sm font-medium text-amber-400 uppercase">
+            Book an Inspection
+          </h4>
+          <h2 className="mt-1 text-2xl md:text-3xl font-bold text-white">
+            Let’s Go Inspect Your New Property
+          </h2>
+          <p className="mt-2 text-lg font-semibold text-white">
+            Call us on:{" "}
+            <a
+              href="tel:08074918900"
+              className="underline hover:text-amber-300"
+            >
+              08074918900
+            </a>
+          </p>
+        </div>
+
+        {/* Right / Image */}
+        <div className="mt-6 md:mt-0 md:ml-8 flex-shrink-0">
+          <img
+            src="/inspection.png"
+            alt="Agent Thumbs Up"
+            className="w-32 md:w-100 object-contain"
+          />
+        </div>
+      </div>
+      {/* Optional bottom accent / stripe */}
+      <div className="h-2 bg-gold w-full"></div>
+    </section>
+  );
+};
+
+export default Inspection;
