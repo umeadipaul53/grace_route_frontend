@@ -28,7 +28,12 @@ import PropertyDetails from "./pages/PropertyDetails";
 import Dashboard from "./pages/dashboard/Dashboard";
 import AccountInfo from "./pages/dashboard/components/AccountInfo";
 import ProfilePicture from "./pages/dashboard/components/ProfilePicture";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ChangePassword from "./pages/ChangePassword";
+import VerifyUserAccount from "./pages/VerifyUserAccount";
+import {
+  UserProtectedRoute,
+  AdminProtectedRoute,
+} from "./components/ProtectedRoute";
 
 function App() {
   const dispatch = useDispatch();
@@ -71,28 +76,30 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<CreateAccount />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/verify-user-account" element={<VerifyUserAccount />} />
           <Route
             path="/my-account"
             element={
-              <ProtectedRoute>
+              <UserProtectedRoute>
                 <Dashboard />
-              </ProtectedRoute>
+              </UserProtectedRoute>
             }
           />
           <Route
             path="/my-account/account-info"
             element={
-              <ProtectedRoute>
+              <UserProtectedRoute>
                 <AccountInfo />
-              </ProtectedRoute>
+              </UserProtectedRoute>
             }
           />
           <Route
             path="/my-account/profile-picture"
             element={
-              <ProtectedRoute>
+              <UserProtectedRoute>
                 <ProfilePicture />
-              </ProtectedRoute>
+              </UserProtectedRoute>
             }
           />
         </Routes>

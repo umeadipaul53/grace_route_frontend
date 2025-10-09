@@ -10,7 +10,7 @@ import { useToast } from "../toastContext/useToast";
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, isAuthenticated, error } = useSelector(
+  const { user, loading, isAuthenticated, error } = useSelector(
     (state) => state.user
   );
 
@@ -22,12 +22,16 @@ function Login() {
 
   // ✅ Redirect user only when successfully logged in
   useEffect(() => {
+    let timeout;
+
     if (isAuthenticated && !loading && !error) {
       showToast("Login successful! Redirecting...", "success");
-      const timeout = setTimeout(() => navigate("/my-account"), 500);
-      return () => clearTimeout(timeout);
+      const route = user?.role === "admin" ? "/admin-account" : "/my-account";
+      timeout = setTimeout(() => navigate(route), 500);
     }
-  }, [isAuthenticated, loading, error]);
+
+    return () => clearTimeout(timeout);
+  }, [isAuthenticated, loading, error, user, navigate]);
 
   // ✅ Show backend errors
   useEffect(() => {

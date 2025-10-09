@@ -33,6 +33,35 @@ export const createUserAccount = createAsyncThunk(
   }
 );
 
+//--- VERIFY USER ACCOUNT CREATED ----
+export const VerifyAccount = createAsyncThunk(
+  "user/verifyAccount",
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await API.get(
+        `/auth/verify-user-account?token=${token}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      const { newToken, message } = response.data;
+      return { newToken, message };
+    } catch (error) {
+      // Extract the most descriptive message possible
+      const errData = error.response?.data;
+      const message =
+        errData?.details?.[0]?.message || // Joi validation message
+        errData?.message || // AppError message
+        error.message || // Network or CORS issue
+        "An unknown error occurred";
+
+      // ✅ Prevent React from seeing an unhandled rejection
+      return rejectWithValue(message);
+    }
+  }
+);
+
 // --- LOGIN USER ---
 export const loginUser = createAsyncThunk(
   "user/loginUser",
@@ -220,6 +249,7 @@ const userSlice = createSlice({
     token: storedToken,
     profileImage: storedUser?.profileImage || null,
     details: null,
+    getValue: null,
     successMessage: null,
     loading: false,
     error: null,
@@ -295,6 +325,20 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
+      // --- VERIFY USER ACCOUNT CRETION ---
+      .addCase(VerifyAccount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(VerifyAccount.fulfilled, (state, action) => {
+        state.loading = false;
+        state.successMessage = action.payload.message;
+      })
+      .addCase(VerifyAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       // --- FORGOT PASSWORD ---
       .addCase(forgotPassword.pending, (state) => {
         state.loading = true;
@@ -329,14 +373,16 @@ const userSlice = createSlice({
       .addCase(checkToken.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.successMessage = null;
+        state.getValue = null;
       })
       .addCase(checkToken.fulfilled, (state, action) => {
         state.loading = false;
+        state.getValue = action.payload.valid;
         state.successMessage = action.payload.message;
       })
       .addCase(checkToken.rejected, (state, action) => {
         state.loading = false;
+        state.getValue = false;
         state.error = action.payload;
       });
   },

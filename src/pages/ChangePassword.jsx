@@ -29,6 +29,7 @@ function ChangePassword() {
   // --- Validate form ---
   const validateForm = () => {
     const newErrors = {};
+
     if (!form.newPassword) newErrors.newPassword = "New Password is required.";
     else if (form.newPassword.length < 6)
       newErrors.newPassword = "Password must be at least 6 characters long.";
@@ -55,9 +56,12 @@ function ChangePassword() {
       const result = await dispatch(
         recoverPassword({ token, ...form })
       ).unwrap();
-      showToast(result.message, "success", 5000);
+
+      // ✅ Show toast for 2 minutes
+      showToast(result.message, "success");
+
       setForm({ newPassword: "", confirmPass: "" });
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate("/login"), 6000);
     } catch (err) {
       showToast(err?.message || "Change Password failed", "error");
     }
@@ -73,23 +77,24 @@ function ChangePassword() {
 
   // --- Verify token ---
   useEffect(() => {
-    const verify = async () => {
+    const checkTokenStatus = async () => {
       try {
         const result = await dispatch(checkToken(token)).unwrap();
-        if (result?.valid) {
-          setTokenValid(true);
-          showToast(result.message, "success");
-        } else {
-          setTokenValid(false);
-          showToast("Invalid or expired token", "error");
-        }
+        showToast(result.message, "success");
+        setTokenValid(result.valid);
       } catch (err) {
         setTokenValid(false);
-        showToast(err?.message || "Token verification failed", "error");
+        showToast(
+          typeof err === "string"
+            ? err
+            : err?.message || "Recover Account failed",
+          "error"
+        );
       }
     };
-    verify();
-  }, [token, dispatch, showToast]);
+
+    checkTokenStatus();
+  }, [token]);
 
   return (
     <div>
@@ -136,6 +141,7 @@ function ChangePassword() {
               </p>
 
               <form className="space-y-5" onSubmit={handleSubmit}>
+                {/* --- New Password --- */}
                 <div className="relative">
                   <Lock
                     className="absolute left-3 top-3 text-gray-400"
@@ -167,6 +173,7 @@ function ChangePassword() {
                   )}
                 </div>
 
+                {/* --- Confirm Password --- */}
                 <div className="relative">
                   <Lock
                     className="absolute left-3 top-3 text-gray-400"
