@@ -1,43 +1,97 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useToast } from "../toastContext/CreateToast";
+import { Mail, Lock, Eye, EyeOff, User, Phone } from "lucide-react";
 import HeroSection from "../components/HeroSection";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createUserAccount,
+  clearSuccessMessage,
+  clearError,
+} from "../reducers/userReducer";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "../toastContext/useToast";
 
 function CreateAccount() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { successMessage, loading, error } = useSelector((state) => state.user);
+
   const { showToast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    firstname: "",
+    lastname: "",
+    phone_number: "",
+  });
+
   const [errors, setErrors] = useState({});
 
+  // --- Validation ---
   const validateForm = () => {
     const newErrors = {};
-
-    if (!email) {
-      newErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    if (!form.email) newErrors.email = "Email is required.";
+    else if (!/\S+@\S+\.\S+/.test(form.email))
       newErrors.email = "Invalid email address.";
-    }
 
-    if (!password) {
-      newErrors.password = "Password is required.";
-    } else if (password.length < 6) {
+    if (!form.password) newErrors.password = "Password is required.";
+    else if (form.password.length < 6)
       newErrors.password = "Password must be at least 6 characters long.";
-    }
+
+    if (!form.firstname) newErrors.firstname = "First name is required.";
+    if (!form.lastname) newErrors.lastname = "Last name is required.";
+    if (!form.phone_number)
+      newErrors.phone_number = "Phone number is required.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  // --- Handle input changes ---
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // --- Submit ---
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      showToast("✅ Login successful!", "success");
-    } else {
-      showToast("⚠️ Please fix the errors above.", "error");
+    if (!validateForm()) return;
+
+    try {
+      const result = await dispatch(createUserAccount(form)).unwrap();
+      showToast(result.message, "success");
+
+      // Reset form
+      setForm({
+        email: "",
+        password: "",
+        firstname: "",
+        lastname: "",
+        phone_number: "",
+      });
+
+      // Optional: navigate to login page
+      // navigate("/login");
+    } catch (err) {
+      console.error("Create account error caught:", err);
+      showToast(
+        typeof err === "string"
+          ? err
+          : err?.message || "Account creation failed",
+        "error"
+      );
     }
   };
+
+  // --- Show error toast from Redux ---
+  useEffect(() => {
+    if (error) {
+      showToast(error, "error");
+      dispatch(clearError());
+    }
+  }, [error, dispatch, showToast]);
 
   return (
     <div>
@@ -48,6 +102,7 @@ function CreateAccount() {
         quote="Join Grace Route Limited today and take the first step toward your dream property."
         backgroundImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=80"
       />
+
       <section className="flex items-center justify-center min-h-screen bg-gray-50">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -58,7 +113,7 @@ function CreateAccount() {
           {/* Logo */}
           <div className="flex justify-center mb-6">
             <img
-              src="/remax-logo.png"
+              src="/logo-new-removebg-preview.png"
               alt="Grace Route Limited Logo"
               className="h-10"
             />
@@ -77,9 +132,10 @@ function CreateAccount() {
               <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
               <input
                 type="email"
+                name="email"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={form.email}
+                onChange={handleChange}
                 className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:outline-none ${
                   errors.email
                     ? "border-red-500 focus:ring-red-500"
@@ -96,9 +152,10 @@ function CreateAccount() {
               <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
               <input
                 type={showPassword ? "text" : "password"}
+                name="password"
                 placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={form.password}
+                onChange={handleChange}
                 className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:outline-none ${
                   errors.password
                     ? "border-red-500 focus:ring-red-500"
@@ -117,32 +174,91 @@ function CreateAccount() {
               )}
             </div>
 
-            {/* Options */}
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center space-x-2 text-gray-600">
-                <input type="checkbox" className="rounded border-gray-300" />
-                <span>Remember Me</span>
-              </label>
-              <a href="#" className="text-blue-600 hover:underline">
-                Forgot Password?
-              </a>
+            {/* First Name */}
+            <div className="relative">
+              <User className="absolute left-3 top-3 text-gray-400" size={20} />
+              <input
+                type="text"
+                name="firstname"
+                placeholder="First Name"
+                value={form.firstname}
+                onChange={handleChange}
+                className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:outline-none ${
+                  errors.firstname
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-blue-500"
+                }`}
+              />
+              {errors.firstname && (
+                <p className="text-red-500 text-sm mt-1">{errors.firstname}</p>
+              )}
+            </div>
+
+            {/* Last Name */}
+            <div className="relative">
+              <User className="absolute left-3 top-3 text-gray-400" size={20} />
+              <input
+                type="text"
+                name="lastname"
+                placeholder="Last Name"
+                value={form.lastname}
+                onChange={handleChange}
+                className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:outline-none ${
+                  errors.lastname
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-blue-500"
+                }`}
+              />
+              {errors.lastname && (
+                <p className="text-red-500 text-sm mt-1">{errors.lastname}</p>
+              )}
+            </div>
+
+            {/* Phone Number */}
+            <div className="relative">
+              <Phone
+                className="absolute left-3 top-3 text-gray-400"
+                size={20}
+              />
+              <input
+                type="tel"
+                name="phone_number"
+                placeholder="Phone Number"
+                value={form.phone_number}
+                onChange={handleChange}
+                className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:outline-none ${
+                  errors.phone_number
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-blue-500"
+                }`}
+              />
+              {errors.phone_number && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.phone_number}
+                </p>
+              )}
             </div>
 
             {/* Submit */}
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition"
             >
-              Sign Up
+              {loading ? "Creating Account..." : "Sign Up"}
             </button>
           </form>
 
-          {/* Signup */}
+          {/* Login redirect */}
           <p className="text-center text-gray-600 text-sm mt-5">
             Already have an account?{" "}
-            <a href="#" className="text-blue-600 font-semibold hover:underline">
+            <button
+              type="button"
+              className="text-blue-600 font-semibold hover:underline"
+              onClick={() => navigate("/login")}
+            >
               Login
-            </a>
+            </button>
           </p>
         </motion.div>
       </section>

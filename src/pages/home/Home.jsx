@@ -6,7 +6,6 @@ import Testimonial from "./components/Testimonial";
 import SearchSection from "./components/SearchSection";
 import PropertyListing from "./components/PropertyListing";
 import NewsCard from "./components/NewsCard";
-import Inspection from "./components/Inspection";
 import PopularSearches from "./components/PopularSearches";
 import WhyUs from "./components/WhyUs";
 import CoreValuesSlide from "./components/CoreValuesSlide";
@@ -72,7 +71,6 @@ function Home() {
       <Testimonial />
       <NewsCard />
       <PopularSearches />
-      <Inspection />
     </div>
   );
 }

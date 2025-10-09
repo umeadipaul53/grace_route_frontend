@@ -14,6 +14,21 @@
   width: max-content;
   animation: marquee 25s linear infinite;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
 .text-gold {
   color: #f4d58d; /* your main gold shade */
 }

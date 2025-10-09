@@ -1,26 +1,14 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, AlertCircle, XCircle, Info } from "lucide-react";
 
-const ToastContext = createContext();
+export const ToastContext = createContext();
 
 const toastStyles = {
-  success: {
-    bg: "bg-green-600",
-    icon: <CheckCircle size={18} />,
-  },
-  error: {
-    bg: "bg-red-600",
-    icon: <XCircle size={18} />,
-  },
-  warning: {
-    bg: "bg-yellow-500",
-    icon: <AlertCircle size={18} />,
-  },
-  info: {
-    bg: "bg-blue-600",
-    icon: <Info size={18} />,
-  },
+  success: { bg: "bg-green-600", icon: <CheckCircle size={18} /> },
+  error: { bg: "bg-red-600", icon: <XCircle size={18} /> },
+  warning: { bg: "bg-yellow-500", icon: <AlertCircle size={18} /> },
+  info: { bg: "bg-blue-600", icon: <Info size={18} /> },
 };
 
 export function ToastProvider({ children }) {
@@ -28,7 +16,7 @@ export function ToastProvider({ children }) {
 
   const showToast = (message, type = "success") => {
     setToast({ message, type });
-    setTimeout(() => setToast({ message: "", type: "" }), 3000); // auto-hide
+    setTimeout(() => setToast({ message: "", type: "" }), 10000);
   };
 
   const closeToast = () => setToast({ message: "", type: "" });
@@ -37,7 +25,6 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
 
-      {/* Toast UI */}
       <AnimatePresence>
         {toast.message && (
           <motion.div
@@ -60,5 +47,3 @@ export function ToastProvider({ children }) {
     </ToastContext.Provider>
   );
 }
-
-export const useToast = () => useContext(ToastContext);

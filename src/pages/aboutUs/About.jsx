@@ -20,8 +20,8 @@ function About() {
       <Results />
       <AboutContent />
       <TeamMembers />
-      <TrustedPartners />
       <JoinGraceRouteCard />
+      <TrustedPartners />
     </div>
   );
 }

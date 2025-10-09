@@ -1,20 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useToast } from "../toastContext/CreateToast";
+import { useToast } from "../toastContext/useToast";
 import HeroSection from "../components/HeroSection";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { forgotPassword, clearError } from "../reducers/userReducer";
 
 function ForgotPassword() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.user);
+
   const { showToast } = useToast();
-  const [email, setEmail] = useState("");
+  const [form, setForm] = useState({ email: "" });
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
     const newErrors = {};
 
-    if (!email) {
+    if (!form.email) {
       newErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
       newErrors.email = "Invalid email address.";
     }
 
@@ -22,14 +29,42 @@ function ForgotPassword() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  // --- Handle input changes ---
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // --- Submit ---
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      showToast("✅ Link sent to your email successful!", "success");
-    } else {
-      showToast("⚠️ Please fix the errors above.", "error");
+    if (!validateForm()) return;
+
+    try {
+      const result = await dispatch(forgotPassword(form)).unwrap();
+      showToast(result.message, "success");
+
+      // Reset form
+      setForm({
+        email: "",
+      });
+    } catch (err) {
+      console.error("Recover account error caught:", err);
+      showToast(
+        typeof err === "string"
+          ? err
+          : err?.message || "Recover Account failed",
+        "error"
+      );
     }
   };
+
+  // --- Show error toast from Redux ---
+  useEffect(() => {
+    if (error) {
+      showToast(error, "error");
+      dispatch(clearError());
+    }
+  }, [error, dispatch, showToast]);
 
   return (
     <div>
@@ -50,7 +85,7 @@ function ForgotPassword() {
           {/* Logo */}
           <div className="flex justify-center mb-6">
             <img
-              src="/remax-logo.png"
+              src="/logo-new-removebg-preview.png"
               alt="Grace Route Limited Logo"
               className="h-10"
             />
@@ -69,9 +104,10 @@ function ForgotPassword() {
               <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
               <input
                 type="email"
+                name="email"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={form.email}
+                onChange={handleChange}
                 className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:outline-none ${
                   errors.email
                     ? "border-red-500 focus:ring-red-500"
@@ -89,26 +125,33 @@ function ForgotPassword() {
                 <input type="checkbox" className="rounded border-gray-300" />
                 <span>Remember Me</span>
               </label>
-              <a href="#" className="text-blue-600 hover:underline">
+              <button
+                onClick={() => navigate("/login")}
+                className="text-blue-600 hover:underline"
+              >
                 Login?
-              </a>
+              </button>
             </div>
 
             {/* Submit */}
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition"
             >
-              Recover Account
+              {loading ? "Recovering Account..." : "Recover Account"}
             </button>
           </form>
 
           {/* Signup */}
           <p className="text-center text-gray-600 text-sm mt-5">
             Don’t have an account?{" "}
-            <a href="#" className="text-blue-600 font-semibold hover:underline">
+            <button
+              onClick={() => navigate("/signup")}
+              className="text-blue-600 font-semibold hover:underline"
+            >
               Sign Up
-            </a>
+            </button>
           </p>
         </motion.div>
       </section>

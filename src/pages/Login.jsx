@@ -1,28 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useToast } from "../toastContext/CreateToast";
 import HeroSection from "../components/HeroSection";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, clearError } from "../reducers/userReducer";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "../toastContext/useToast";
 
 function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, isAuthenticated, error } = useSelector(
+    (state) => state.user
+  );
+
   const { showToast } = useToast();
+
+  const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
+  // ✅ Redirect user only when successfully logged in
+  useEffect(() => {
+    if (isAuthenticated && !loading && !error) {
+      showToast("Login successful! Redirecting...", "success");
+      const timeout = setTimeout(() => navigate("/my-account"), 500);
+      return () => clearTimeout(timeout);
+    }
+  }, [isAuthenticated, loading, error]);
+
+  // ✅ Show backend errors
+  useEffect(() => {
+    if (error) {
+      showToast(error, "error");
+      dispatch(clearError());
+    }
+  }, [error, dispatch, showToast]);
+
+  // ✅ Validate input
   const validateForm = () => {
     const newErrors = {};
-
-    if (!email) {
+    if (!form.email) {
       newErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Invalid email address.";
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      newErrors.email = "Invalid email format.";
     }
 
-    if (!password) {
+    if (!form.password) {
       newErrors.password = "Password is required.";
-    } else if (password.length < 6) {
+    } else if (form.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters long.";
     }
 
@@ -30,12 +56,28 @@ function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      showToast("✅ Login successful!", "success");
-    } else {
-      showToast("⚠️ Please fix the errors above.", "error");
+  // ✅ Handle input change
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // ✅ Handle submit safely (no auto-refresh)
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // 🚫 stop form refresh
+    e.stopPropagation(); // 🚫 stop bubbling
+
+    if (!validateForm()) return;
+
+    try {
+      const result = await dispatch(loginUser(form)).unwrap();
+      showToast("Login successful! Redirecting...", "success");
+    } catch (err) {
+      console.error("Login error caught:", err);
+      // err may be a string, not an object, so handle both
+      showToast(
+        typeof err === "string" ? err : err?.message || "Login failed",
+        "error"
+      );
     }
   };
 
@@ -43,11 +85,12 @@ function Login() {
     <div>
       <HeroSection
         title="Access Account"
-        sub_title="Secure Login  "
+        sub_title="Secure Login"
         highlight=" to Your Account"
         quote="At Grace Route Limited, your trust and security come first. Log in to safely access your dashboard and manage your property goals with ease."
         backgroundImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=80"
       />
+
       <section className="flex items-center justify-center min-h-screen bg-gray-50">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -58,13 +101,13 @@ function Login() {
           {/* Logo */}
           <div className="flex justify-center mb-6">
             <img
-              src="/remax-logo.png"
+              src="/logo-new-removebg-preview.png"
               alt="Grace Route Limited Logo"
               className="h-10"
             />
           </div>
 
-          {/* Welcome Message */}
+          {/* Welcome Text */}
           <h2 className="text-2xl font-bold text-center text-gray-800">
             Welcome back!
           </h2>
@@ -73,19 +116,20 @@ function Login() {
           </p>
 
           {/* Form */}
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-5" onSubmit={handleSubmit} noValidate>
             {/* Email */}
             <div className="relative">
               <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
               <input
                 type="email"
+                name="email"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={form.email}
+                onChange={handleChange}
                 className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:outline-none ${
                   errors.email
                     ? "border-red-500 focus:ring-red-500"
-                    : "border-gray-300 focus:ring-blue-500"
+                    : "border-gray-300 focus:ring-yellow-500"
                 }`}
               />
               {errors.email && (
@@ -98,13 +142,14 @@ function Login() {
               <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
               <input
                 type={showPassword ? "text" : "password"}
+                name="password"
                 placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={form.password}
+                onChange={handleChange}
                 className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:outline-none ${
                   errors.password
                     ? "border-red-500 focus:ring-red-500"
-                    : "border-gray-300 focus:ring-blue-500"
+                    : "border-gray-300 focus:ring-yellow-500"
                 }`}
               />
               <button
@@ -125,26 +170,35 @@ function Login() {
                 <input type="checkbox" className="rounded border-gray-300" />
                 <span>Remember Me</span>
               </label>
-              <a href="#" className="text-blue-600 hover:underline">
+              <button
+                type="button"
+                onClick={() => navigate("/forgot-password")}
+                className="text-yellow-600 hover:underline"
+              >
                 Forgot Password?
-              </a>
+              </button>
             </div>
 
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition"
+              disabled={loading}
+              className="w-full bg-yellow-500 text-white font-semibold py-3 rounded-lg hover:bg-yellow-600 transition"
             >
-              Log In
+              {loading ? "Logging in..." : "Log In"}
             </button>
           </form>
 
           {/* Signup */}
           <p className="text-center text-gray-600 text-sm mt-5">
             Don’t have an account?{" "}
-            <a href="#" className="text-blue-600 font-semibold hover:underline">
+            <button
+              type="button"
+              onClick={() => navigate("/signup")}
+              className="text-yellow-600 font-semibold hover:underline"
+            >
               Sign Up
-            </a>
+            </button>
           </p>
         </motion.div>
       </section>

@@ -68,12 +68,12 @@ const WhyUs = () => {
 
         {/* Right Content */}
         <div>
-          <h4 className="text-amber-600 font-semibold uppercase tracking-wide">
+          <h4 className="text-[#B8860B] font-semibold uppercase tracking-wide">
             Why Choose Us
           </h4>
           <h2 className="mt-2 text-3xl md:text-4xl font-bold text-gray-900">
             You Should Choose{" "}
-            <span className="text-amber-600">Grace Route Limited</span>
+            <span className="text-[#B8860B]">Grace Route Limited</span>
           </h2>
           <p className="mt-4 text-gray-600 max-w-xl">
             Grace Route Limited is dedicated to realizing your homeownership
@@ -85,7 +85,7 @@ const WhyUs = () => {
           <div className="mt-8 grid sm:grid-cols-2 gap-6">
             {features.map((feature) => (
               <div key={feature.id} className="flex items-start space-x-4">
-                <feature.icon className="w-8 h-8 text-amber-600 flex-shrink-0" />
+                <feature.icon className="w-8 h-8 text-[#B8860B] flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold text-gray-900">
                     {feature.title}

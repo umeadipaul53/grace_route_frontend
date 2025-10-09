@@ -1,4 +1,9 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { jwtDecode } from "jwt-decode";
+import { logoutUser } from "./reducers/userReducer";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -18,8 +23,31 @@ import Managements from "./pages/Managements";
 import Login from "./pages/Login";
 import CreateAccount from "./pages/CreateAccount";
 import ForgotPassword from "./pages/ForgotPassword";
+import PropertyListing from "./pages/PropertyListing";
+import PropertyDetails from "./pages/PropertyDetails";
+import Dashboard from "./pages/dashboard/Dashboard";
+import AccountInfo from "./pages/dashboard/components/AccountInfo";
+import ProfilePicture from "./pages/dashboard/components/ProfilePicture";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        if (decoded.exp < Date.now() / 1000) {
+          dispatch(logoutUser());
+          window.location.href = "/login";
+        }
+      } catch {
+        dispatch(logoutUser());
+      }
+    }
+  }, [dispatch]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -30,8 +58,10 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/management" element={<Managements />} />
           <Route path="/careers" element={<Careers />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/contact-us" element={<Contact />} />
           <Route path="/find" element={<FindProperty />} />
+          <Route path="/property-listing" element={<PropertyListing />} />
+          <Route path="/property-details" element={<PropertyDetails />} />
           <Route path="/buy" element={<BuyProperty />} />
           <Route path="/sell" element={<SellProperty />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
@@ -41,6 +71,30 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<CreateAccount />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            path="/my-account"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-account/account-info"
+            element={
+              <ProtectedRoute>
+                <AccountInfo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-account/profile-picture"
+            element={
+              <ProtectedRoute>
+                <ProfilePicture />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
       <Footer />

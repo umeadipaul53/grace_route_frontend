@@ -1,23 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser, fetchUserProfile } from "../reducers/userReducer";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const { user, isAuthenticated, details } = useSelector((state) => state.user);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
-
-  // Simulated authentication state
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username] = useState("JohnDoe");
-  const avatarUrl = "https://i.pravatar.cc/40?img=3"; // Placeholder avatar
+  const [dashboardOpen, setDashboardOpen] = useState(false); // for mobile dashboard dropdown
+  const [moreOpen, setMoreOpen] = useState(false);
+  const avatarUrl = details?.profileImage || "/dp.png";
 
   const dropdownRef = useRef();
+  const moreTimeoutRef = useRef(null);
+  const navigate = useNavigate();
 
-  const toggleMobileMenu = () => setMenuOpen(!menuOpen);
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-
-  // Close dropdown when clicking outside
+  // Close profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -28,12 +28,56 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (isAuthenticated && !details) {
+      dispatch(fetchUserProfile());
+    }
+  }, [isAuthenticated, dispatch, details]);
+
+  // Cleanup hover timeout
+  useEffect(() => {
+    return () => {
+      if (moreTimeoutRef.current) {
+        clearTimeout(moreTimeoutRef.current);
+        moreTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggleMobileMenu = () => setMenuOpen(!menuOpen);
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
+  const handleLinkClick = () => {
+    setMenuOpen(false);
+    setDashboardOpen(false);
+    setMoreOpen(false);
+  };
+
+  const handleMoreEnter = () => {
+    if (moreTimeoutRef.current) {
+      clearTimeout(moreTimeoutRef.current);
+      moreTimeoutRef.current = null;
+    }
+    setMoreOpen(true);
+  };
+
+  const handleMoreLeave = () => {
+    moreTimeoutRef.current = setTimeout(() => {
+      setMoreOpen(false);
+      moreTimeoutRef.current = null;
+    }, 120);
+  };
+
+  const handleDashboardClick = (tabId) => {
+    navigate(`/my-account?tab=${tabId}`);
+    handleLinkClick();
+  };
+
   return (
     <header className="sticky top-0 z-50 shadow-md">
       {/* Top Header */}
       <div className="bg-green-950 text-gold text-sm">
         <div className="container mx-auto flex justify-between items-center px-6 py-2">
-          {/* Contact Info */}
           <div className="flex space-x-6 text-gold-500">
             <a href="tel:+2348012345678" className="text-gold">
               📞 +234 801 234 5678
@@ -42,10 +86,8 @@ const Navbar = () => {
               ✉ info@realestate.com
             </a>
           </div>
-
-          {/* Social Media */}
           <div className="flex space-x-4">
-            <a href="https://www.facebook.com" className="hover:text-gray-200">
+            <a href="#" className="hover:text-gray-200">
               <Facebook size={18} />
             </a>
             <a href="#" className="hover:text-gray-200">
@@ -64,7 +106,6 @@ const Navbar = () => {
       {/* Navbar */}
       <nav className="bg-white">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          {/* Logo */}
           <Link to="/" className="flex items-center">
             <img
               src="/logo-new-removebg-preview.png"
@@ -82,16 +123,35 @@ const Navbar = () => {
               <Link to="/about-us">About us</Link>
             </li>
 
-            {/* Services Dropdown */}
-            <li className="relative group">
-              <button className="hover:text-green-950">More ▼</button>
-              <ul className="absolute left-0 mt-2 w-44 bg-white shadow-md rounded-lg opacity-0 group-hover:opacity-100 transform scale-95 group-hover:scale-100 transition duration-200 ease-out pointer-events-none group-hover:pointer-events-auto">
+            {/* More Dropdown */}
+            <li
+              className="relative"
+              onMouseEnter={handleMoreEnter}
+              onMouseLeave={handleMoreLeave}
+            >
+              <button className="hover:text-green-950 flex items-center gap-1 transition-colors duration-200">
+                More
+                <span
+                  className={`text-xs transform transition-transform duration-200 ${
+                    moreOpen ? "rotate-180" : "rotate-0"
+                  }`}
+                >
+                  ▼
+                </span>
+              </button>
+              <ul
+                className={`absolute left-0 mt-2 w-44 bg-white shadow-md rounded-lg transition-all duration-200 ease-out origin-top z-50 ${
+                  moreOpen
+                    ? "opacity-100 scale-100 pointer-events-auto"
+                    : "opacity-0 scale-95 pointer-events-none"
+                }`}
+              >
                 <li>
                   <Link
                     to="/services"
                     className="block px-4 py-2 hover:bg-gray-100"
                   >
-                    Our services
+                    Our Services
                   </Link>
                 </li>
                 <li>
@@ -129,9 +189,9 @@ const Navbar = () => {
             </li>
           </ul>
 
-          {/* Auth Buttons / Profile Dropdown */}
+          {/* Profile or Auth */}
           <div className="hidden md:flex items-center space-x-4">
-            {!isLoggedIn ? (
+            {!isAuthenticated ? (
               <>
                 <Link
                   to="/login"
@@ -141,7 +201,7 @@ const Navbar = () => {
                 </Link>
                 <Link
                   to="/signup"
-                  className="bg-green-950 text-white px-4 py-2 rounded hover:bg-green-950"
+                  className="bg-green-950 text-white px-4 py-2 rounded hover:bg-green-900"
                 >
                   Sign Up
                 </Link>
@@ -150,33 +210,33 @@ const Navbar = () => {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={toggleDropdown}
-                  className="flex items-center space-x-2 focus:outline-none"
+                  className="flex items-center space-x-2"
                 >
                   <img
                     src={avatarUrl}
                     alt="User avatar"
-                    className="w-9 h-9 rounded-full border border-gray-300"
+                    className="w-9 h-9 rounded-full border"
                   />
-                  <span className="text-gray-700 font-medium">{username}</span>
+                  <span className="text-gray-700 font-medium">
+                    {user?.firstname} {user?.lastname}
+                  </span>
                   <span>▼</span>
                 </button>
-
-                {/* Animated Dropdown */}
                 <div
-                  className={`absolute right-0 mt-2 w-40 bg-white border rounded shadow-md transform transition-all duration-200 ease-in-out origin-top ${
+                  className={`absolute right-0 mt-2 w-40 bg-white border rounded shadow-md transition-all duration-200 origin-top ${
                     dropdownOpen
                       ? "scale-100 opacity-100"
                       : "scale-95 opacity-0 pointer-events-none"
                   }`}
                 >
                   <Link
-                    to="/dashboard"
+                    to="/my-account"
                     className="block px-4 py-2 hover:bg-gray-100"
                   >
-                    Dashboard
+                    My Account
                   </Link>
                   <button
-                    onClick={() => setIsLoggedIn(false)}
+                    onClick={() => dispatch(logoutUser())}
                     className="w-full text-left px-4 py-2 hover:bg-gray-100"
                   >
                     Logout
@@ -188,75 +248,113 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-gray-700 text-2xl focus:outline-none"
             onClick={toggleMobileMenu}
+            className="md:hidden text-gray-700 text-2xl"
           >
             ☰
           </button>
         </div>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Menu */}
         {menuOpen && (
           <div className="md:hidden px-6 pb-4 space-y-2 bg-white border-t border-gray-100 text-gray-700 font-medium">
-            <Link to="/" className="block py-2">
+            <Link to="/" className="block py-2" onClick={handleLinkClick}>
               Home
             </Link>
-            <Link to="/about-us" className="block py-2">
+            <Link
+              to="/about-us"
+              className="block py-2"
+              onClick={handleLinkClick}
+            >
               About us
             </Link>
 
-            {/* Mobile Services Dropdown */}
+            {/* Dashboard Submenu (mobile only) */}
             <div>
               <button
-                onClick={() => setServicesOpen(!servicesOpen)}
+                onClick={() => setDashboardOpen(!dashboardOpen)}
                 className="w-full text-left py-2 flex justify-between items-center"
               >
-                More <span>{servicesOpen ? "▲" : "▼"}</span>
+                My Account
+                <span>{dashboardOpen ? "▲" : "▼"}</span>
               </button>
-              {servicesOpen && (
-                <div className="ml-4 space-y-2">
-                  <Link to="/services" className="block py-1">
-                    Our services
-                  </Link>
-                  <Link to="/careers" className="block py-1">
-                    Careers
-                  </Link>
-                  <Link to="/management" className="block py-1">
-                    Management
-                  </Link>
-                  <Link to="/faq" className="block py-1">
-                    FAQ
-                  </Link>
+              {dashboardOpen && (
+                <div className="ml-4 space-y-1 text-gray-600">
+                  <button
+                    onClick={() => handleDashboardClick("account")}
+                    className="block w-full text-left py-1"
+                  >
+                    Account Settings
+                  </button>
+                  <button
+                    onClick={() => handleDashboardClick("goals")}
+                    className="block w-full text-left py-1"
+                  >
+                    My Goals
+                  </button>
+                  <button
+                    onClick={() => handleDashboardClick("saved")}
+                    className="block w-full text-left py-1"
+                  >
+                    My Saved Searches
+                  </button>
+                  <button
+                    onClick={() => handleDashboardClick("favorites")}
+                    className="block w-full text-left py-1"
+                  >
+                    My Favorites
+                  </button>
+                  <button
+                    onClick={() => handleDashboardClick("buy")}
+                    className="block w-full text-left py-1"
+                  >
+                    Buy Orders
+                  </button>
+                  <button
+                    onClick={() => handleDashboardClick("sell")}
+                    className="block w-full text-left py-1"
+                  >
+                    List My Property
+                  </button>
                 </div>
               )}
             </div>
 
-            <Link to="/buy" className="block py-2">
+            <Link to="/buy" className="block py-2" onClick={handleLinkClick}>
               Buy
             </Link>
-            <Link to="/sell" className="block py-2">
+            <Link to="/sell" className="block py-2" onClick={handleLinkClick}>
               Sell
             </Link>
-            <Link to="/contact-us" className="block py-2">
+            <Link
+              to="/contact-us"
+              className="block py-2"
+              onClick={handleLinkClick}
+            >
               Contact Us
             </Link>
 
-            {!isLoggedIn ? (
+            {!isAuthenticated ? (
               <>
-                <Link to="/login" className="block py-2">
+                <Link
+                  to="/login"
+                  className="block py-2"
+                  onClick={handleLinkClick}
+                >
                   Login
                 </Link>
-                <Link to="/signup" className="block py-2">
+                <Link
+                  to="/signup"
+                  className="block py-2"
+                  onClick={handleLinkClick}
+                >
                   Sign Up
                 </Link>
               </>
             ) : (
               <>
-                <Link to="/dashboard" className="block py-2">
-                  Dashboard
-                </Link>
                 <button
-                  onClick={() => setIsLoggedIn(false)}
+                  onClick={() => dispatch(logoutUser())}
                   className="block w-full text-left py-2"
                 >
                   Logout
