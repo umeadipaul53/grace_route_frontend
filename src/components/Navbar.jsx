@@ -77,26 +77,44 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 shadow-md">
       {/* Top Header */}
       <div className="bg-green-950 text-gold text-sm">
-        <div className="container mx-auto flex justify-between items-center px-6 py-2">
-          <div className="flex space-x-6 text-gold-500">
-            <a href="tel:+2348012345678" className="text-gold">
+        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-4 md:px-6 py-2 space-y-3 md:space-y-0 text-center md:text-left">
+          {/* Contact Info */}
+          <div className="flex flex-col sm:flex-row sm:space-x-6 text-gold-500">
+            <a href="tel:+2348012345678" className="text-gold block sm:inline">
               📞 +234 801 234 5678
             </a>
-            <a href="mailto:info@realestate.com" className="text-gold">
+            <a
+              href="mailto:info@realestate.com"
+              className="text-gold block sm:inline"
+            >
               ✉ info@realestate.com
             </a>
           </div>
-          <div className="flex space-x-4">
-            <a href="#" className="hover:text-gray-200">
+
+          {/* Social Icons */}
+          <div className="flex justify-center md:justify-end space-x-4">
+            <a
+              href="#"
+              className="hover:text-gray-200 transition-colors duration-200"
+            >
               <Facebook size={18} />
             </a>
-            <a href="#" className="hover:text-gray-200">
+            <a
+              href="#"
+              className="hover:text-gray-200 transition-colors duration-200"
+            >
               <Twitter size={18} />
             </a>
-            <a href="#" className="hover:text-gray-200">
+            <a
+              href="#"
+              className="hover:text-gray-200 transition-colors duration-200"
+            >
               <Instagram size={18} />
             </a>
-            <a href="#" className="hover:text-gray-200">
+            <a
+              href="#"
+              className="hover:text-gray-200 transition-colors duration-200"
+            >
               <Linkedin size={18} />
             </a>
           </div>
