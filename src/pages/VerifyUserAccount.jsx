@@ -33,7 +33,7 @@ function VerifyUserAccount() {
     };
 
     verify();
-  }, [token, dispatch, showToast]);
+  }, [token, dispatch]);
 
   // 🕒 Redirect to login page after success
   useEffect(() => {
