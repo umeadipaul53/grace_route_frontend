@@ -73,7 +73,7 @@ function ChangePassword() {
       showToast(error, "error");
       dispatch(clearError());
     }
-  }, [error, dispatch, showToast]);
+  }, [error, dispatch]);
 
   // --- Verify token ---
   useEffect(() => {

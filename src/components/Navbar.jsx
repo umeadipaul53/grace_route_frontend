@@ -73,6 +73,11 @@ const Navbar = () => {
     handleLinkClick();
   };
 
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/login");
+  };
+
   return (
     <header className="sticky top-0 z-50 shadow-md">
       {/* Top Header */}
@@ -254,7 +259,7 @@ const Navbar = () => {
                     My Account
                   </Link>
                   <button
-                    onClick={() => dispatch(logoutUser())}
+                    onClick={handleLogout}
                     className="w-full text-left px-4 py-2 hover:bg-gray-100"
                   >
                     Logout
@@ -372,7 +377,7 @@ const Navbar = () => {
             ) : (
               <>
                 <button
-                  onClick={() => dispatch(logoutUser())}
+                  onClick={handleLogout}
                   className="block w-full text-left py-2"
                 >
                   Logout

@@ -1,113 +1,221 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { Heart, Home } from "lucide-react";
+import { useToast } from "../../../toastContext/useToast";
 
-const properties = [
-  {
-    id: 1,
-    image:
-      "https://images.unsplash.com/photo-1572120360610-d971b9b78825?auto=format&fit=crop&w=800&q=80",
-    price: "$820,000",
-    address: "3400 E Janice St, Long Beach, CA 90805",
-    beds: 4,
-    baths: 2,
-    sqft: 1200,
-    badges: ["Open House", "3D Virtual Tour"],
-    listedBy: "Zuma, Inc - Srdika Kilic",
-  },
-  {
-    id: 2,
-    image:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    price: "$400,000",
-    address: "2150 Ohio Ave Apt E, Signal Hill, CA 90755",
-    beds: 1,
-    baths: 1,
-    sqft: 638,
-    badges: ["3D Virtual Tour", "New Listing"],
-    listedBy: "TNG Real Estate Consultants - Dawn Coronel",
-  },
-  {
-    id: 3,
-    image:
-      "https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=800&q=80",
-    price: "$1,599,000",
-    address: "3835 California Ave, Long Beach, CA 90807",
-    beds: 4,
-    baths: 4,
-    sqft: 2457,
-    badges: ["New Listing"],
-    listedBy: "Coldwell Banker Realty - Donna Reel",
-  },
-];
+import { searchProperty, buyProperty } from "../../../reducers/userReducer";
+import {
+  getFavourites,
+  toggleFavourite,
+} from "../../../reducers/favouriteReducer";
 
-const PropertyCard = ({ property }) => {
+/* ✅ Property Card Component */
+const PropertyCard = ({ property, user }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+
+  const { items: favourites, loading: favLoading } = useSelector(
+    (state) => state.favourites || {}
+  );
+
+  const [isBuying, setIsBuying] = useState(false);
+  const [bought, setBought] = useState(false);
+
+  /* ✅ Fetch favourites only when user logs in */
+  useEffect(() => {
+    if (user?._id) dispatch(getFavourites());
+  }, [dispatch, user?._id]);
+
+  /* ✅ Check if property is a favourite */
+  const isFavourite =
+    Array.isArray(favourites) &&
+    favourites.some((fav) => fav._id === property._id);
+
+  /* ✅ Handle add/remove favourite */
+  const handleFavourite = async (e, id) => {
+    e.stopPropagation(); // ✅ prevent navigation when clicking Buy
+    if (!user) {
+      showToast("Please log in to add favorites", "error");
+      return;
+    }
+
+    try {
+      const result = await dispatch(toggleFavourite(id)).unwrap();
+      const message =
+        result.action === "removed"
+          ? "Removed from favourites"
+          : "Added to favourites";
+      showToast(message, "success");
+    } catch (err) {
+      showToast(err || "Something went wrong", "error");
+    }
+  };
+
+  /* ✅ Handle property purchase */
+  const handleBuyProperty = async (e, id) => {
+    e.stopPropagation(); // ✅ prevent navigation when clicking Buy
+    if (!user) {
+      showToast("Kindly log in to purchase this property", "error");
+      setTimeout(() => navigate("/login"), 3000);
+      return;
+    }
+
+    try {
+      setIsBuying(true);
+      const result = await dispatch(buyProperty(id)).unwrap();
+
+      if (result?.message?.toLowerCase().includes("already")) {
+        showToast(result.message, "error");
+        return;
+      }
+
+      showToast(
+        result.message ||
+          "Thank you for purchasing this property. Our sales team will contact you shortly.",
+        "success"
+      );
+      setBought(true);
+    } catch (err) {
+      showToast(
+        typeof err === "string" ? err : err?.message || "Purchase failed",
+        "error"
+      );
+    } finally {
+      setIsBuying(false);
+    }
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition">
-      {/* Image */}
+    <Link
+      to={`/property-details/${property._id}`}
+      key={property._id}
+      className="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300"
+    >
+      {/* ✅ Image */}
       <div className="relative">
         <img
-          src={property.image}
-          alt={property.address}
-          className="w-full h-70 object-cover"
+          src={property?.images?.[0]?.url}
+          alt={property?.property_name || "Property image"}
+          className="w-full h-56 sm:h-64 md:h-72 object-cover"
         />
-        {/* Favorite Button */}
-        <button className="absolute top-3 right-3 bg-white rounded-full p-2 shadow hover:scale-110 transition">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-5 h-5 text-gray-600"
+
+        {/* ✅ Favourite Button */}
+        {user && (
+          <button
+            onClick={(e) => handleFavourite(e, property._id)}
+            disabled={favLoading}
+            className="absolute top-3 right-3 bg-white/90 hover:bg-white p-1.5 rounded-full shadow"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 8.25c0-2.485-2.239-4.5-5-4.5-1.657 0-3.09.895-3.857 2.216A4.495 4.495 0 009 3.75c-2.761 0-5 2.015-5 4.5 0 7.22 8 11.25 8 11.25s8-4.03 8-11.25z"
-            />
-          </svg>
-        </button>
+            {isFavourite ? (
+              <Heart className="text-red-500 fill-red-500" size={20} />
+            ) : (
+              <Heart className="text-gray-400" size={20} />
+            )}
+          </button>
+        )}
       </div>
 
-      {/* Content */}
-      <div className="p-5">
-        <h3 className="text-xl font-bold text-gray-900">{property.price}</h3>
-        <p className="text-sm text-gray-600 mt-1">{property.address}</p>
+      {/* ✅ Property Content */}
+      <div className="p-4 sm:p-5">
+        <p className="mt-2 text-base sm:text-lg font-semibold text-gray-400 tracking-tight capitalize font-serif truncate">
+          {property.property_name}
+        </p>
+        <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+          ₦{property.price?.toLocaleString()}
+        </h3>
+        <p className="text-sm text-gray-600 mt-1 truncate">
+          {property.location?.city || "Unknown city"},{" "}
+          {property.location?.state || ""}
+        </p>
 
-        {/* Badges */}
-        <div className="flex flex-wrap gap-2 mt-3">
-          {property.badges.map((badge, i) => (
-            <span
-              key={i}
-              className="px-3 py-1 text-xs rounded-full bg-amber-100 text-amber-700 font-medium"
-            >
-              {badge}
-            </span>
-          ))}
+        {/* ✅ Tags & Buy Button */}
+        <div className="flex flex-wrap gap-2 mt-3 items-center">
+          <span className="px-3 py-1 text-xs rounded-full bg-amber-100 text-amber-700 font-medium">
+            {property.property_type}
+          </span>
+
+          <button
+            className={`px-3 py-1 text-xs rounded-full font-medium text-white transition ${
+              bought
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-700 hover:bg-green-800"
+            }`}
+            onClick={(e) => handleBuyProperty(e, property._id)}
+            disabled={isBuying || bought}
+          >
+            {isBuying ? "Buying..." : bought ? "Purchased" : "Buy Now"}
+          </button>
         </div>
 
-        {/* Details */}
-        <div className="flex justify-between items-center mt-4 text-sm text-gray-700">
-          <span>{property.beds} Beds</span>
-          <span>{property.baths} Baths</span>
-          <span>{property.sqft.toLocaleString()} Sq Ft</span>
+        {/* ✅ Details */}
+        <div className="flex flex-wrap justify-between items-center mt-4 text-xs sm:text-sm text-gray-700 gap-y-1">
+          <span>{property.bedrooms} Bedrooms</span>
+          <span>{property.unitsNumber} Units</span>
+          <span>Plot size: {property.plotArea} sqm</span>
         </div>
 
-        <p className="mt-3 text-xs text-gray-500">{property.listedBy}</p>
+        <p className="mt-3 text-xs text-gray-500">
+          Listed by Grace Route Limited
+        </p>
       </div>
-    </div>
+    </Link>
   );
 };
 
+/* ✅ Property Listing Component */
 const PropertyListing = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user, propertyData, loading } = useSelector((state) => state.user);
+
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  /* ✅ Fetch properties only once on mount */
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        await dispatch(
+          searchProperty({ limit: 6, status: "available" })
+        ).unwrap();
+      } catch (err) {
+        console.error("Error fetching properties:", err);
+      } finally {
+        setIsLoaded(true);
+      }
+    };
+    fetchProperties();
+  }, [dispatch]);
+
+  /* ✅ Handle loading and empty states */
+  if (!isLoaded && loading)
+    return <p className="text-center py-10">Loading properties...</p>;
+  if (!loading && (!propertyData || propertyData.length === 0))
+    return <p className="text-center py-10">No properties found.</p>;
+
   return (
-    <section className="max-w-7xl px-6 py-16 mx-auto">
-      <h2 className="text-3xl font-bold text-green-950 mb-8">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <h2 className="text-2xl sm:text-3xl font-bold text-green-900 mb-8 text-center sm:text-left">
         Featured Properties
       </h2>
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {properties.map((property) => (
-          <PropertyCard key={property.id} property={property} />
+
+      <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {propertyData.map((property) => (
+          <PropertyCard key={property._id} property={property} user={user} />
         ))}
+      </div>
+
+      {/* ✅ "See More" Button */}
+      <div className="flex justify-center mt-10">
+        <button
+          onClick={() => navigate("/property-listing")}
+          type="button"
+          className="flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white font-medium px-6 py-3 rounded-md transition-all duration-300 shadow-md hover:shadow-lg"
+        >
+          <Home size={18} />
+          See More
+        </button>
       </div>
     </section>
   );

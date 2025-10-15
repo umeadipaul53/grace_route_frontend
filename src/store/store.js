@@ -1,10 +1,12 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import userReducer from "../reducers/userReducer";
+import favouritesReducer from "../reducers/favouriteReducer";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import { persistStore, persistReducer } from "redux-persist";
 
 const rootReducer = combineReducers({
   user: userReducer,
+  favourites: favouritesReducer,
 });
 
 const persistConfig = {

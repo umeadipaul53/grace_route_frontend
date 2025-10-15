@@ -7,15 +7,15 @@ const API = axios.create({
       ? "https://grace-route-real-estate-company.onrender.com/api"
       : "http://localhost:3300/api",
   headers: { "Content-Type": "application/json" },
-  withCredentials: true, // allow refreshToken cookie
+  withCredentials: true, // for refreshToken cookie
 });
 
-// ✅ Function to check if token is expired
+// ✅ Check if token expired
 const isTokenExpired = (token) => {
   try {
     const decoded = jwtDecode(token);
     if (!decoded.exp) return false;
-    const currentTime = Date.now() / 1000; // seconds
+    const currentTime = Date.now() / 1000;
     return decoded.exp < currentTime;
   } catch (err) {
     console.error("Invalid token:", err);
@@ -23,7 +23,7 @@ const isTokenExpired = (token) => {
   }
 };
 
-// ✅ Function to refresh access token using HttpOnly refresh cookie
+// ✅ Refresh token using HttpOnly cookie
 const refreshAccessToken = async () => {
   try {
     const res = await axios.post(
@@ -54,11 +54,10 @@ const refreshAccessToken = async () => {
 let isRefreshing = false;
 let refreshQueue = [];
 
-// ✅ Helper to queue requests while refreshing
 const processRefreshQueue = (error, newToken = null) => {
-  refreshQueue.forEach((promise) => {
-    if (error) promise.reject(error);
-    else promise.resolve(newToken);
+  refreshQueue.forEach((p) => {
+    if (error) p.reject(error);
+    else p.resolve(newToken);
   });
   refreshQueue = [];
 };
@@ -66,18 +65,21 @@ const processRefreshQueue = (error, newToken = null) => {
 // ✅ Request Interceptor
 API.interceptors.request.use(
   async (config) => {
-    const token = localStorage.getItem("token");
-
+    let token = localStorage.getItem("token");
+    console.log("🟡 Outgoing request:", config.url);
+    console.log("🟡 Token attached:", token ? "YES" : "NO");
+    // Attach token if available
     if (token) {
+      // Check expiration
       if (isTokenExpired(token)) {
-        console.warn("Access token expired — attempting refresh...");
+        console.warn("⏳ Access token expired — refreshing...");
 
         if (!isRefreshing) {
           isRefreshing = true;
           try {
             const newToken = await refreshAccessToken();
             processRefreshQueue(null, newToken);
-            config.headers.Authorization = `Bearer ${newToken}`;
+            token = newToken;
           } catch (error) {
             processRefreshQueue(error, null);
             throw error;
@@ -85,13 +87,14 @@ API.interceptors.request.use(
             isRefreshing = false;
           }
         } else {
-          // Wait for the current refresh to finish
-          const newToken = await new Promise((resolve, reject) => {
+          // Wait for refresh to complete
+          token = await new Promise((resolve, reject) => {
             refreshQueue.push({ resolve, reject });
           });
-          config.headers.Authorization = `Bearer ${newToken}`;
         }
-      } else {
+      }
+
+      if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
@@ -105,31 +108,37 @@ API.interceptors.request.use(
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
+    const originalRequest = error.config || {};
+    const url = originalRequest.url || "";
 
-    // Skip redirect for login/register/forgot-password routes
-    const isAuthRoute =
-      originalRequest.url.includes("/auth/login") ||
-      originalRequest.url.includes("/auth/register") ||
-      originalRequest.url.includes("/auth/forgot-password");
+    // Ignore auth-related routes
+    if (
+      url.includes("/auth/login") ||
+      url.includes("/auth/register") ||
+      url.includes("/auth/forgot-password") ||
+      url.includes("/auth/refresh-token")
+    ) {
+      return Promise.reject(error);
+    }
 
-    // If request failed with 401 due to expired access token
-    if (error.response && error.response.status === 401 && !isAuthRoute) {
-      // Avoid infinite retry loop
-      if (!originalRequest._retry) {
-        originalRequest._retry = true;
-        try {
-          const newToken = await refreshAccessToken();
-          if (newToken) {
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            return API(originalRequest); // retry the original request
-          }
-        } catch (err) {
-          console.warn("❌ Refresh failed, forcing logout");
+    // Handle expired or invalid token
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        const newToken = await refreshAccessToken();
+        if (newToken) {
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return API(originalRequest);
         }
+      } catch (err) {
+        console.warn("❌ Refresh failed, logging out...");
       }
 
-      // If refresh fails completely → logout
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       window.location.href = "/login";

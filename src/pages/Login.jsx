@@ -21,17 +21,30 @@ function Login() {
   const [errors, setErrors] = useState({});
 
   // ✅ Redirect user only when successfully logged in
+  // useEffect(() => {
+  //   let timeout;
+
+  //   if (isAuthenticated && !loading && !error) {
+  //     showToast("Login successful! Redirecting...", "success");
+  //     const route = user?.role === "admin" ? "/admin-account" : "/my-account";
+  //     timeout = setTimeout(() => navigate(route), 500);
+  //   }
+
+  //   return () => clearTimeout(timeout);
+  // }, [isAuthenticated, loading, error, user, navigate]);
+
   useEffect(() => {
-    let timeout;
-
     if (isAuthenticated && !loading && !error) {
-      showToast("Login successful! Redirecting...", "success");
       const route = user?.role === "admin" ? "/admin-account" : "/my-account";
-      timeout = setTimeout(() => navigate(route), 500);
+      showToast("Login successful! Redirecting...", "success");
+      const timeout = setTimeout(() => navigate(route), 800);
+      return () => clearTimeout(timeout);
     }
-
-    return () => clearTimeout(timeout);
   }, [isAuthenticated, loading, error, user, navigate]);
+
+  useEffect(() => {
+    console.log("Login state:", { loading, error, isAuthenticated, user });
+  }, [loading, error, isAuthenticated, user]);
 
   // ✅ Show backend errors
   useEffect(() => {
@@ -73,6 +86,7 @@ function Login() {
     if (!validateForm()) return;
 
     try {
+      console.log("🔹 Sending login request...");
       const result = await dispatch(loginUser(form)).unwrap();
       showToast("Login successful! Redirecting...", "success");
     } catch (err) {

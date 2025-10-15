@@ -3,39 +3,33 @@ import React from "react";
 const categories = [
   {
     id: 1,
-    title: "Duplex",
-    image:
-      "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?auto=format&fit=crop&w=800&q=80",
+    title: "Lands",
+    image: "/lands.jpeg",
   },
   {
     id: 2,
-    title: "Luxury Homes",
-    image:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+    title: "Duplex",
+    image: "/duplex.jpg",
   },
   {
     id: 3,
-    title: "Open Houses",
-    image:
-      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80",
+    title: "Bungalow",
+    image: "/Bungalow.jpg",
   },
   {
     id: 4,
-    title: "Price Reductions",
-    image:
-      "https://images.unsplash.com/photo-1600585154154-712aa3d8b6ae?auto=format&fit=crop&w=800&q=80",
+    title: "Terraced Duplex",
+    image: "/terraced_duplex.jpg",
   },
   {
     id: 5,
-    title: "Virtual Tours",
-    image:
-      "https://images.unsplash.com/photo-1581093588401-22e66fb3f1b4?auto=format&fit=crop&w=800&q=80",
+    title: "Block of Flats",
+    image: "/block_of_flats.jpeg",
   },
   {
     id: 6,
-    title: "Miracle Homes",
-    image:
-      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80",
+    title: "Semi-detached Duplex",
+    image: "/semi-detached.jpg",
   },
 ];
 
@@ -43,9 +37,9 @@ const PopularSearches = () => {
   return (
     <section className="max-w-7xl mx-auto px-6 py-16">
       {/* Heading */}
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-10">
-        Popular Searches
-      </h2>
+      {/* <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-10">
+        Our Deals
+      </h2> */}
 
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

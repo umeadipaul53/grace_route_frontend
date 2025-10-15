@@ -16,7 +16,7 @@ export function ToastProvider({ children }) {
 
   const showToast = (message, type = "success") => {
     setToast({ message, type });
-    setTimeout(() => setToast({ message: "", type: "" }), 10000);
+    setTimeout(() => setToast({ message: "", type: "" }), 5000);
   };
 
   const closeToast = () => setToast({ message: "", type: "" });

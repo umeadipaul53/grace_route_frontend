@@ -10,16 +10,16 @@ const AccountSettings = ({ onCardClick }) => {
 
       <Card
         icon="fa-user"
-        title="My Contact Info"
-        desc="View, edit, or update your contact information and sign-in preferences."
-        onClick={() => onCardClick("accountInfo")}
+        title="Profile Picture"
+        desc="Upload, view, or update your profile picture."
+        onClick={() => onCardClick("profile")}
       />
 
       <Card
         icon="fa-user"
-        title="Profile Picture"
-        desc="Upload, view, or update your profile picture."
-        onClick={() => onCardClick("profile")}
+        title="My Contact Info"
+        desc="View, edit, or update your contact information and sign-in preferences."
+        onClick={() => onCardClick("accountInfo")}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { logoutUser } from "./reducers/userReducer";
@@ -34,9 +34,16 @@ import {
   UserProtectedRoute,
   AdminProtectedRoute,
 } from "./components/ProtectedRoute";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const ProfilePictureRoute = () => {
+    const navigate = useNavigate();
+    return <ProfilePicture onBack={() => navigate(-1)} />;
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -66,7 +73,7 @@ function App() {
           <Route path="/contact-us" element={<Contact />} />
           <Route path="/find" element={<FindProperty />} />
           <Route path="/property-listing" element={<PropertyListing />} />
-          <Route path="/property-details" element={<PropertyDetails />} />
+          <Route path="/property-details/:id" element={<PropertyDetails />} />
           <Route path="/buy" element={<BuyProperty />} />
           <Route path="/sell" element={<SellProperty />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
@@ -98,10 +105,11 @@ function App() {
             path="/my-account/profile-picture"
             element={
               <UserProtectedRoute>
-                <ProfilePicture />
+                <ProfilePictureRoute />
               </UserProtectedRoute>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
