@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Search, Heart, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { findPropertyLocations, searchProperty } from "../reducers/userReducer";
 import { getFavourites, toggleFavourite } from "../reducers/favouriteReducer";
 import { useToast } from "../toastContext/useToast";
-import { Link, useNavigate } from "react-router-dom";
+import PropertyCard from "./PropertyCard"; // adjust path if your folder is different
 
 const PropertyListing = () => {
   const dispatch = useDispatch();
   const { showToast } = useToast();
-  const navigate = useNavigate();
 
   const {
     locations = [],
@@ -19,11 +18,6 @@ const PropertyListing = () => {
     pagination,
     user,
   } = useSelector((state) => state.user);
-  const { items: favourites, loading: favLoading } = useSelector(
-    (state) => state.favourites || {}
-  );
-
-  console.log(favourites);
 
   const [query, setQuery] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -33,71 +27,12 @@ const PropertyListing = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [initialFetchDone, setInitialFetchDone] = useState(false);
-  const [isBuying, setIsBuying] = useState(false);
 
   useEffect(() => {
     if (user) {
       dispatch(getFavourites());
     }
   }, [dispatch, user]);
-
-  const handleFavourite = async (e, id) => {
-    e.stopPropagation(); // ✅ prevent navigation when clicking Buy
-    if (!user) {
-      showToast("Please log in to add favorites", "error");
-      return;
-    }
-
-    try {
-      const result = await dispatch(toggleFavourite(id)).unwrap();
-      const message =
-        result.action === "removed"
-          ? "Removed from favourites"
-          : "Added to favourites";
-      showToast(message, "success");
-    } catch (err) {
-      showToast(err || "Something went wrong", "error");
-    }
-  };
-
-  const handleBuyProperty = async (e, id) => {
-    e.stopPropagation(); // ✅ prevent navigation when clicking Buy
-    if (!user) {
-      showToast(
-        "Kindly login to your account to purchase this property",
-        "error"
-      );
-      setTimeout(() => navigate("/login"), 3000);
-      return;
-    }
-
-    try {
-      setIsBuying(true);
-      const result = await dispatch(buyProperty(id)).unwrap();
-
-      // ✅ Only show success if actually purchased
-      if (result?.message?.toLowerCase().includes("already")) {
-        showToast(result.message, "error");
-        return; // don't reload or change anything
-      }
-
-      showToast(
-        result.message ||
-          "Thank you for making a purchasing order on this property, our sales team will contact you shortly.",
-        "success"
-      );
-
-      // Optional: you can manually update local state instead of re-fetching
-      // so that the card remains visible
-    } catch (err) {
-      showToast(
-        typeof err === "string" ? err : err?.message || "Purchase failed",
-        "error"
-      );
-    } finally {
-      setIsBuying(false);
-    }
-  };
 
   // stable ref for toast so we don't have to include showToast in deps
   const toastRef = useRef(showToast);
@@ -143,7 +78,7 @@ const PropertyListing = () => {
     return () => {
       cancelled = true;
     };
-  }, [dispatch, currentPage]); // no showToast here
+  }, [dispatch, currentPage]);
 
   // Filtered fetch AFTER initial load
   useEffect(() => {
@@ -197,7 +132,7 @@ const PropertyListing = () => {
     propertyType,
     priceRange,
     currentPage,
-  ]); // intentionally no showToast
+  ]);
 
   // ✅ Normalize city list
   const allCities = Array.isArray(locations) ? locations.filter(Boolean) : [];
@@ -208,6 +143,11 @@ const PropertyListing = () => {
     setShowSuggestions(false);
     setCurrentPage(1);
   };
+
+  if (loading)
+    return <p className="text-center py-10">Loading properties...</p>;
+  if (!loading && (!propertyData || propertyData.length === 0))
+    return <p className="text-center py-10">No properties found.</p>;
 
   return (
     <section className="bg-white py-10">
@@ -399,99 +339,10 @@ const PropertyListing = () => {
         </div>
 
         {/* 🏠 Property Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {loading ? (
-            <div className="col-span-full flex justify-center items-center mt-10">
-              <p className="text-gray-500 text-sm">Loading properties...</p>
-            </div>
-          ) : error ? (
-            <div className="col-span-full flex justify-center items-center mt-10">
-              <p className="text-red-500 text-sm">{error}</p>
-            </div>
-          ) : propertyData.length === 0 ? (
-            <div className="col-span-full flex justify-center items-center mt-10">
-              <p className="text-gray-500 text-sm">
-                No property found for your search.
-              </p>
-            </div>
-          ) : (
-            propertyData.map((property) => {
-              const isFavourite =
-                Array.isArray(favourites) &&
-                favourites.some((fav) => fav._id === property._id);
-
-              return (
-                <Link
-                  to={`/property-details/${property._id}`}
-                  key={property._id}
-                  className="border rounded-lg overflow-hidden bg-white hover:shadow-lg transition"
-                >
-                  <div className="relative">
-                    <img
-                      src={property?.images?.[0]?.url}
-                      alt={property?.images?.[0]?.public_id || "Property image"}
-                      className="w-full h-70 object-cover"
-                    />
-                    {/* Favorite Button */}
-
-                    {user && (
-                      <button
-                        onClick={(e) => handleFavourite(e, property._id)}
-                        disabled={favLoading}
-                        className="absolute top-3 right-3 bg-white/80 hover:bg-white p-1.5 rounded-full shadow"
-                      >
-                        {isFavourite ? (
-                          <Heart className="text-red-500 fill-red-500" />
-                        ) : (
-                          <Heart className="text-gray-400" />
-                        )}
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="p-5">
-                    <p className="mt-3 text-lg font-semibold text-gray-400 tracking-tight capitalize font-serif">
-                      {property.property_name}
-                    </p>
-                    <h3 className="text-xl font-bold text-gray-900">
-                      ₦{property.price?.toLocaleString()}
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {property.location?.city}, {property.location?.state}
-                    </p>
-
-                    {/* Badges */}
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      <span className="px-3 py-1 text-xs rounded-full bg-amber-100 text-amber-700 font-medium">
-                        {property.property_type}
-                      </span>
-
-                      {/* ✅ Show Buy Now if user logged in */}
-
-                      <button
-                        className="px-3 py-1 text-xs rounded-full bg-green-600 text-white font-medium hover:bg-green-700 transition"
-                        onClick={(e) => handleBuyProperty(e, property._id)}
-                        disabled={isBuying}
-                      >
-                        {isBuying ? "Buying..." : "Buy Now"}
-                      </button>
-                    </div>
-
-                    {/* Details */}
-                    <div className="flex justify-between items-center mt-4 text-sm text-gray-700">
-                      <span>{property.bedrooms} </span>
-                      <span>{property.unitsNumber} Units</span>
-                      <span>Plot size: {property.plotArea}</span>
-                    </div>
-
-                    <p className="mt-3 text-xs text-gray-500">
-                      Listed by Grace Route Limited
-                    </p>
-                  </div>
-                </Link>
-              );
-            })
-          )}
+        <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {propertyData.map((property) => (
+            <PropertyCard key={property._id} property={property} user={user} />
+          ))}
         </div>
 
         {/* Pagination */}

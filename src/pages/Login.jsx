@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser, clearError } from "../reducers/userReducer";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../toastContext/useToast";
+import { getFavourites } from "../reducers/favouriteReducer";
 
 function Login() {
   const dispatch = useDispatch();
@@ -35,6 +36,9 @@ function Login() {
 
   useEffect(() => {
     if (isAuthenticated && !loading && !error) {
+      // get favourites
+      dispatch(getFavourites());
+
       const route = user?.role === "admin" ? "/admin-account" : "/my-account";
       showToast("Login successful! Redirecting...", "success");
       const timeout = setTimeout(() => navigate(route), 800);

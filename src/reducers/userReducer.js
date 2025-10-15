@@ -630,7 +630,7 @@ const userSlice = createSlice({
 
       // --- BUY PROPERTY ---
       .addCase(buyProperty.pending, (state) => {
-        state.loading = true;
+        state.loading = false;
         state.error = null;
       })
       .addCase(buyProperty.fulfilled, (state, action) => {

@@ -21,7 +21,6 @@ const PropertyCard = ({ property, user }) => {
   );
 
   const [isBuying, setIsBuying] = useState(false);
-  const [bought, setBought] = useState(false);
 
   /* ✅ Fetch favourites only when user logs in */
   useEffect(() => {
@@ -35,6 +34,7 @@ const PropertyCard = ({ property, user }) => {
 
   /* ✅ Handle add/remove favourite */
   const handleFavourite = async (e, id) => {
+    e.preventDefault();
     e.stopPropagation(); // ✅ prevent navigation when clicking Buy
     if (!user) {
       showToast("Please log in to add favorites", "error");
@@ -55,6 +55,7 @@ const PropertyCard = ({ property, user }) => {
 
   /* ✅ Handle property purchase */
   const handleBuyProperty = async (e, id) => {
+    e.preventDefault();
     e.stopPropagation(); // ✅ prevent navigation when clicking Buy
     if (!user) {
       showToast("Kindly log in to purchase this property", "error");
@@ -76,7 +77,6 @@ const PropertyCard = ({ property, user }) => {
           "Thank you for purchasing this property. Our sales team will contact you shortly.",
         "success"
       );
-      setBought(true);
     } catch (err) {
       showToast(
         typeof err === "string" ? err : err?.message || "Purchase failed",
@@ -137,15 +137,13 @@ const PropertyCard = ({ property, user }) => {
           </span>
 
           <button
-            className={`px-3 py-1 text-xs rounded-full font-medium text-white transition ${
-              bought
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-700 hover:bg-green-800"
-            }`}
+            className={
+              "px-3 py-1 text-xs rounded-full font-medium text-white transition bg-green-700 hover:bg-green-800 "
+            }
             onClick={(e) => handleBuyProperty(e, property._id)}
-            disabled={isBuying || bought}
+            disabled={isBuying}
           >
-            {isBuying ? "Buying..." : bought ? "Purchased" : "Buy Now"}
+            {isBuying ? "Buying..." : "Buy Now"}
           </button>
         </div>
 
