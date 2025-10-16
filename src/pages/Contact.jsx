@@ -8,8 +8,13 @@ import {
 } from "react-icons/fa";
 import HeroSection from "../components/HeroSection";
 import JoinGraceRouteCard from "../components/JoinUsCard";
+import { sendContactMessage } from "../reducers/messageReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { useToast } from "../toastContext/useToast";
 
 function Contact() {
+  const dispatch = useDispatch();
+  const { showToast } = useToast();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -31,6 +36,8 @@ function Contact() {
     else if (!/^\S+@\S+\.\S+$/.test(form.email))
       e.email = "Please enter a valid email address.";
     if (!form.phone.trim()) e.phone = "Please enter your phone number.";
+    if (!form.subject.trim())
+      e.subject = "Please enter subject of your message.";
     if (!form.message.trim()) e.message = "Please write a message.";
     return e;
   };
@@ -43,13 +50,8 @@ function Contact() {
 
     setStatus({ loading: true, success: null, message: "" });
     try {
-      const resp = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (!resp.ok) throw new Error((await resp.text()) || "Submission failed");
-
+      const result = await dispatch(sendContactMessage(form)).unwrap();
+      showToast(result.message, "success");
       setStatus({
         loading: false,
         success: true,
@@ -57,6 +59,12 @@ function Contact() {
       });
       setForm({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (err) {
+      showToast(
+        typeof err === "string"
+          ? err
+          : err?.message || "Sending message failed",
+        "error"
+      );
       setStatus({
         loading: false,
         success: false,
@@ -169,6 +177,11 @@ function Contact() {
                     }
                     className="mt-1 w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#C5A572]"
                   />
+                  {errors.subject && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.subject}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -236,7 +249,7 @@ function Contact() {
                       icon: <FaMapMarkerAlt />,
                       title: "Address",
                       detail:
-                        "1 Grace Route Drive, Victoria Island, Lagos, Nigeria",
+                        "House 1, Ground Floor Emenike Iykepac Street Behind Meal Dorm Resturant Okpuno Awka South",
                     },
                     {
                       icon: <FaEnvelope />,
@@ -294,7 +307,7 @@ function Contact() {
               <div className="overflow-hidden rounded-3xl shadow-xl border-2 border-[#C5A572]/30">
                 <iframe
                   title="Grace Route Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126743.123456789!2d3.384!3d6.524!2m3!1f0!2f0!3f0!"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15864.885801265149!2d7.059600443508621!3d6.234513180976921!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104383ee9074a4d1%3A0x367bb3bc6d22d347!2sMeal%20Dorm%20Restaurant!5e0!3m2!1sen!2sng!4v1760633780281!5m2!1sen!2sng"
                   className="w-full h-80 border-0"
                   loading="lazy"
                 ></iframe>

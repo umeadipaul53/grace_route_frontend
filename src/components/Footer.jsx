@@ -156,14 +156,15 @@ const Footer = () => {
               Contact Us
             </h5>
             <address className="not-italic text-sm">
-              2 Julius Adelusi Street
+              House 1, Ground Floor Emenike Iykepac Street Behind Meal Dorm
+              Resturant
               <br />
-              Guzape, Abuja
+              Okpuno Awka South
             </address>
             <p className="mt-2 text-sm">
               Email:{" "}
               <a href="mailto:info@mshelhomes.com" className="hover:text-white">
-                info@mshelhomes.com
+                info@gracerouteltd.com
               </a>
             </p>
             <p className="text-sm mt-1">

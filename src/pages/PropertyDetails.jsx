@@ -1,109 +1,131 @@
-// src/components/PropertyDetailsPage.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getPropertyDetails,
+  getComparableProperties,
+} from "../reducers/propertyReducer";
+import { useParams } from "react-router-dom";
+import { getFavourites, toggleFavourite } from "../reducers/favouriteReducer";
+import { useToast } from "../toastContext/useToast";
+import { buyProperty } from "../reducers/userReducer";
+import ComparableListings from "./comparableProperty";
+import {
+  VolumeX,
+  Car,
+  Utensils,
+  Bike,
+  ShoppingCart,
+  X,
+  Heart,
+} from "lucide-react";
+import { secheduleTour } from "../reducers/messageReducer";
 
-/**
- * PropertyDetailsPage.jsx
- * Plain React + Tailwind CSS (no TypeScript)
- *
- * Single-file implementation that mimics the RE/MAX property details layout
- * with gold accents and a static gallery (thumbnails + main image).
- *
- * Usage:
- *   <PropertyDetailsPage />
- *
- * Notes:
- * - Replace placeholder image URLs in `exampleProperty.images` with your real images.
- * - Tailwind classes assume Tailwind is configured in your project.
- */
+function PropertyDetails() {
+  const { showToast } = useToast();
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const { propertyDetail, comparableProperties } = useSelector(
+    (state) => state.property
+  );
+  const { items: favourites, loading: favLoading } = useSelector(
+    (state) => state.favourites || {}
+  );
+  const { loading } = useSelector((state) => state.message);
+  const { user } = useSelector((state) => state.user);
+  const [isBuying, setIsBuying] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [tourForm, setTourForm] = useState({
+    property: id,
+    email: "",
+    date: "",
+    time: "",
+    name: "",
+    phone: "",
+  });
 
-export default function PropertyDetails() {
+  useEffect(() => {
+    dispatch(getPropertyDetails(id));
+  }, [id]); // ✅ only depend on id, dispatch is stable
+
+  useEffect(() => {
+    dispatch(getComparableProperties(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    if (user?._id) dispatch(getFavourites());
+  }, [dispatch, user?._id]);
+
+  /* ✅ Check if property is a favourite */
+  const isFavourite =
+    Array.isArray(favourites) &&
+    favourites.some((fav) => fav._id === propertyDetail?._id);
+
+  /* ✅ Handle add/remove favourite */
+  const handleFavourite = async (e, id) => {
+    e.preventDefault();
+    e.stopPropagation(); // ✅ prevent navigation when clicking Buy
+    if (!user) {
+      showToast("Please log in to add favorites", "error");
+      return;
+    }
+
+    try {
+      const result = await dispatch(toggleFavourite(id)).unwrap();
+      const message =
+        result.action === "removed"
+          ? "Removed from favourites"
+          : "Added to favourites";
+      showToast(message, "success");
+    } catch (err) {
+      showToast(err || "Something went wrong", "error");
+    }
+  };
+
+  /* ✅ Handle property purchase */
+  const handleBuyProperty = async (e, id) => {
+    e.preventDefault();
+    e.stopPropagation(); // ✅ prevent navigation when clicking Buy
+    if (!user) {
+      showToast("Kindly log in to purchase this property", "error");
+      setTimeout(() => navigate("/login"), 3000);
+      return;
+    }
+
+    try {
+      setIsBuying(true);
+      const result = await dispatch(buyProperty(id)).unwrap();
+
+      if (result?.message?.toLowerCase().includes("already")) {
+        showToast(result.message, "error");
+        return;
+      }
+
+      showToast(
+        result.message ||
+          "Thank you for purchasing this property. Our sales team will contact you shortly.",
+        "success"
+      );
+    } catch (err) {
+      showToast(
+        typeof err === "string" ? err : err?.message || "Purchase failed",
+        "error"
+      );
+    } finally {
+      setIsBuying(false);
+    }
+  };
+
   // --- Example property data (169 Sunset Ln, London, KY) ---
   const property = {
-    title: "169 SUNSET LN",
-    address: "London, KY 40744",
-    price: "$175,000",
-    status: "Active",
-    beds: 4,
-    baths: 3,
-    sqft: "2,750",
-    lot: "1.04 acres",
-    yearBuilt: 1996,
-    mls: "25502973",
-    description:
-      "Welcome to this beautifully maintained home at 169 Sunset Ln. Spacious open-plan living areas, updated kitchen, hardwood floors, and a large private yard. The property offers country living with easy access to town amenities.",
-    features: [
-      "Open floor plan",
-      "Updated kitchen with island",
-      "Hardwood floors",
-      "Large fenced backyard",
-      "Two-car garage",
-      "Basement (partially finished)",
-    ],
-    images: [
-      // Replace these with your real images; kept as Unsplash-style placeholders here
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80",
-      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200&q=80",
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&q=80",
-      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1200&q=80",
-      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1200&q=80",
-    ],
     agent: {
-      name: "Tracy Saunders",
-      office: "CENTURY 21 Advantage Realty",
-      phone: "(606) 555-0134",
-      email: "tracy@example.com",
-      avatar:
-        "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=400&q=80",
+      name: "Grace Route Limited",
+      office:
+        "House 1, Ground Floor Emenike Iykepac Street Behind Meal Dorm Resturant Okpuno Awka South",
+      phone: "+2347062825454",
+      email: "info@gracerouteltd.com",
+      avatar: "/logo-head.png",
     },
-    comparables: [
-      {
-        image:
-          "https://images.unsplash.com/photo-1560184897-6c1d1f3c2f3a?w=800&q=80",
-        address: "3131 Lily Rd, London, KY",
-        price: "$189,000",
-        beds: 3,
-        baths: 2,
-        sqft: "1,656",
-      },
-      {
-        image:
-          "https://images.unsplash.com/photo-1572120360610-d971b9b6a3c2?w=800&q=80",
-        address: "334 Timberland Cir, Corbin, KY",
-        price: "$159,900",
-        beds: 3,
-        baths: 2,
-        sqft: "1,440",
-      },
-      {
-        image:
-          "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80",
-        address: "298 Smith Brewer Rd, London, KY",
-        price: "$197,000",
-        beds: 3,
-        baths: 2,
-        sqft: "1,960",
-      },
-    ],
-    history: [
-      {
-        date: "08/06/2021",
-        source: "Public Record",
-        detail: "Sold",
-        price: "$85,000",
-      },
-      {
-        date: "04/30/2008",
-        source: "Public Record",
-        detail: "Sold",
-        price: "$81,300",
-      },
-      {
-        date: "06/01/1996",
-        source: "Public Record",
-        detail: "Sold",
-        price: "$13,000",
-      },
-    ],
     neighborhood: {
       summary:
         "Quiet neighborhood with easy access to schools and highways. Friendly community and a short drive to downtown amenities.",
@@ -125,29 +147,119 @@ export default function PropertyDetails() {
         },
       ],
     },
-    mapEmbedUrl:
-      "https://maps.google.com/maps?q=169%20sunset%20ln%20london%20ky&t=&z=13&ie=UTF8&iwloc=&output=embed",
   };
 
+  const features = [
+    {
+      icon: <VolumeX className="w-5 h-5 text-green-600" />,
+      title: "Quiet",
+      desc: "Virtually no sources of noise nearby.",
+    },
+    {
+      icon: <Car className="w-5 h-5 text-green-600" />,
+      title: "Car friendly",
+      desc: "Excellent access to freeways and major arteries, with almost no chance of parking problems.",
+    },
+    {
+      icon: <Utensils className="w-5 h-5 text-green-600" />,
+      title: "Restaurants",
+      desc: "Some restaurants within walking distance.",
+    },
+    {
+      icon: <Bike className="w-5 h-5 text-green-600" />,
+      title: "Cycling friendly",
+      desc: "Not very suitable for bicycle commuting or recreational cycling.",
+    },
+    {
+      icon: <ShoppingCart className="w-5 h-5 text-green-600" />,
+      title: "Groceries",
+      desc: "Closest supermarket further than a 30-minute walk.",
+    },
+  ];
+
   // --- Gallery state (static gallery: main image + thumbnails) ---
-  const [mainIndex, setMainIndex] = useState(0);
-  const mainImage = property.images[mainIndex];
+  const [mainIndex, setMainIndex] = useState(1);
+  const mainImage =
+    propertyDetail?.images?.[mainIndex]?.url ||
+    propertyDetail?.images?.[0]?.url ||
+    "/Bungalow.jpg";
 
-  // --- Simple mortgage estimator state (basic stub) ---
-  const [downPercent, setDownPercent] = useState("20");
-  const [interest, setInterest] = useState("6.5");
-  const [termYears, setTermYears] = useState("30");
-  const priceNumber =
-    Number(property.price.replace(/[^0-9.-]+/g, "")) || 175000;
+  const amenities = [
+    "Electricity",
+    "Water Supply",
+    "Accessible Road",
+    "Security",
+    "Drainage System",
+    "Waste Disposal",
+    "Registered Title",
+    "Plot Allocation",
+  ];
 
-  const calcMortgage = () => {
-    const down = (Number(downPercent) / 100) * priceNumber;
-    const principal = priceNumber - down;
-    const r = Number(interest) / 100 / 12;
-    const n = Number(termYears) * 12;
-    if (r === 0) return (principal / n).toFixed(2);
-    const monthly = (principal * r) / (1 - Math.pow(1 + r, -n));
-    return monthly.toFixed(0);
+  // ✅ Validate input
+  const validateTourForm = () => {
+    const newErrors = {};
+    if (!tourForm.email) {
+      newErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(tourForm.email)) {
+      newErrors.email = "Invalid email format.";
+    }
+
+    if (!tourForm.date) {
+      newErrors.date = "Date is required.";
+    }
+
+    if (!tourForm.time) {
+      newErrors.time = "Time is required.";
+    }
+
+    if (!tourForm.name) {
+      newErrors.name = "Fullname is required.";
+    }
+
+    if (!tourForm.phone) {
+      newErrors.phone = "Phone Number is required.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // ✅ Handle input change
+  const handleChangeTourForm = (e) => {
+    setTourForm({ ...tourForm, [e.target.name]: e.target.value });
+  };
+
+  const handleTourSchedule = async (e) => {
+    e.preventDefault(); // 🚫 stop form refresh
+    e.stopPropagation(); // 🚫 stop bubbling
+
+    if (!validateTourForm()) return;
+
+    const today = new Date().toISOString().split("T")[0];
+
+    if (tourForm.date < today) {
+      setErrors((prev) => ({
+        ...prev,
+        date: "Please select a valid date (today or future).",
+      }));
+      return; // ⛔ Stop submission
+    }
+
+    try {
+      const result = await dispatch(secheduleTour(tourForm)).unwrap();
+      showToast(result.message, "success");
+      setOpenModal(false);
+    } catch (err) {
+      console.error("Tour scheduled error caught:", err);
+      // err may be a string, not an object, so handle both
+      showToast(
+        typeof err === "string"
+          ? err
+          : err?.message || "Tour scheduling failed",
+        "error"
+      );
+      setOpenModal(false);
+    }
   };
 
   return (
@@ -164,7 +276,7 @@ export default function PropertyDetails() {
             Homes
           </a>{" "}
           &nbsp;›&nbsp;
-          <span>{property.title}</span>
+          <span>{propertyDetail?.property_name}</span>
         </div>
 
         {/* Header: Title / Price / Quick facts */}
@@ -172,38 +284,69 @@ export default function PropertyDetails() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900">
-                {property.title}
+                {propertyDetail?.property_name}
               </h1>
               <div className="text-sm text-slate-500 mt-1">
-                {property.address}
+                {propertyDetail?.location?.city}{" "}
+                {propertyDetail?.location?.state}
               </div>
               <div className="mt-3 flex items-center gap-3">
                 <span className="inline-flex items-center px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-sm font-medium ring-1 ring-amber-100">
-                  {property.status}
+                  {propertyDetail?.status === "available"
+                    ? "active"
+                    : "not active"}
                 </span>
                 <div className="text-2xl md:text-3xl font-extrabold text-amber-600">
-                  {property.price}
+                  ₦{propertyDetail?.price?.toLocaleString()}
                 </div>
                 <div className="text-sm text-slate-500">
-                  {property.beds} beds • {property.baths} baths •{" "}
-                  {property.sqft} sq ft
+                  {propertyDetail?.bedrooms} • {propertyDetail?.unitsNumber}{" "}
+                  units • {propertyDetail?.plotArea}
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              <button className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200">
-                Save
+              <button
+                type="button"
+                className={
+                  "hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 bg-green-950 text-white"
+                }
+                onClick={(e) => handleBuyProperty(e, propertyDetail._id)}
+                disabled={isBuying}
+              >
+                {isBuying ? "Buying..." : "Buy Now"}
               </button>
-              <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-600 text-white shadow hover:bg-amber-700">
-                Contact Agent
-              </button>
+              {user && (
+                <button
+                  type="button"
+                  onClick={(e) => handleFavourite(e, propertyDetail._id)}
+                  disabled={favLoading}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-blue-400 shadow hover:bg-blue-100"
+                >
+                  {isFavourite ? (
+                    <>
+                      <Heart className="text-red-500 fill-red-500 w-4 h-4" />
+                      <span className="text-sm text-red-500 font-medium">
+                        Favourite
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Heart className="text-gray-400 w-4 h-4" />
+                      <span className="text-sm text-gray-500 font-medium">
+                        Favourite
+                      </span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           </div>
         </div>
 
         {/* Main grid: left (gallery + details) and right (sidebar) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
           {/* Left / Center: gallery + details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Gallery */}
@@ -218,54 +361,110 @@ export default function PropertyDetails() {
 
               <div className="px-4 py-3 border-t">
                 <div className="flex gap-3 overflow-x-auto">
-                  {property.images.map((src, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setMainIndex(i)}
-                      className={`flex-shrink-0 rounded-md overflow-hidden border ${
-                        i === mainIndex
-                          ? "ring-2 ring-amber-300"
-                          : "border-transparent"
-                      }`}
-                    >
-                      <img
-                        src={src}
-                        alt={`thumb-${i}`}
-                        className="w-36 h-24 object-cover"
-                      />
-                    </button>
-                  ))}
+                  {Array.isArray(propertyDetail?.images) &&
+                  propertyDetail.images.length > 0 ? (
+                    propertyDetail.images.map((src, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setMainIndex(i)}
+                        className={`flex-shrink-0 rounded-md overflow-hidden border ${
+                          i === mainIndex
+                            ? "ring-2 ring-amber-300"
+                            : "border-transparent"
+                        }`}
+                      >
+                        <img
+                          src={src.url || src} // sometimes API might just send a string URL
+                          alt={`thumb-${i}`}
+                          className="w-36 h-24 object-cover"
+                        />
+                      </button>
+                    ))
+                  ) : (
+                    <div className="text-sm text-gray-400 px-4 py-2">
+                      No images available
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Details */}
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h2 className="font-semibold text-lg mb-3">
+                  Property Description
+                </h2>
+                <p className="text-sm text-slate-700 leading-relaxed">
+                  {propertyDetail?.description}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+              <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100">
+                <h2 className="text-2xl font-semibold mb-6 text-green-900 border-b pb-3">
+                  Overview
+                </h2>
+
+                <ul className="space-y-4">
+                  {features.map((f, i) => (
+                    <li key={i} className="flex items-start gap-4">
+                      <div className="bg-green-50 p-3 rounded-full">
+                        {f.icon}
+                      </div>
+                      <div>
+                        <h3 className="text-base font-semibold text-slate-800">
+                          {f.title}
+                        </h3>
+                        <p className="text-sm text-slate-500">{f.desc}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* History & Neighborhood */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white p-6 rounded-lg shadow">
                 <h2 className="font-semibold text-lg mb-3">Property Details</h2>
                 <div className="grid grid-cols-2 gap-3 text-sm text-slate-600">
                   <div>
-                    <div className="text-xs text-slate-400">Year Built</div>
-                    <div className="font-medium">{property.yearBuilt}</div>
+                    <div className="text-xs text-slate-400">Property Type</div>
+                    <div className="font-medium">
+                      {propertyDetail?.property_type}
+                    </div>
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400">Lot Size</div>
-                    <div className="font-medium">{property.lot}</div>
+                    <div className="text-xs text-slate-400">Home Type</div>
+                    <div className="font-medium">
+                      {propertyDetail?.homeType}
+                    </div>
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400">MLS#</div>
-                    <div className="font-medium">{property.mls}</div>
+                    <div className="text-xs text-slate-400">Plot Size</div>
+                    <div className="font-medium">
+                      {propertyDetail?.plotArea}
+                    </div>
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400">Square Ft</div>
-                    <div className="font-medium">{property.sqft}</div>
+                    <div className="text-xs text-slate-400">Bedrooms</div>
+                    <div className="font-medium">
+                      {propertyDetail?.bedrooms}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-slate-400">Postal Code</div>
+                    <div className="font-medium">
+                      {propertyDetail?.location?.postalCode}
+                    </div>
                   </div>
                 </div>
 
                 <div className="mt-4">
-                  <h3 className="text-sm text-slate-500 mb-2">Features</h3>
+                  <h3 className="text-sm text-slate-500 mb-2">Amenities</h3>
                   <ul className="list-disc pl-5 text-sm text-slate-700 space-y-1">
-                    {property.features.map((f, idx) => (
+                    {amenities.map((f, idx) => (
                       <li key={idx}>{f}</li>
                     ))}
                   </ul>
@@ -273,86 +472,12 @@ export default function PropertyDetails() {
               </div>
 
               <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="font-semibold text-lg mb-3">Description</h2>
-                <p className="text-sm text-slate-700 leading-relaxed">
-                  {property.description}
-                </p>
-
-                <div className="mt-4">
-                  <h3 className="text-sm font-medium text-slate-600 mb-2">
-                    Share
-                  </h3>
-                  <div className="flex gap-2">
-                    <button className="px-3 py-2 border rounded text-sm">
-                      Email
-                    </button>
-                    <button className="px-3 py-2 border rounded text-sm">
-                      Print
-                    </button>
-                    <button className="px-3 py-2 border rounded text-sm">
-                      Share
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Comparables */}
-            <div>
-              <h2 className="text-xl font-semibold mb-3">
-                Comparable Listings
-              </h2>
-              <div className="flex gap-4 overflow-x-auto pb-3">
-                {property.comparables.map((c, i) => (
-                  <div
-                    key={i}
-                    className="min-w-[260px] bg-white rounded-lg shadow overflow-hidden"
-                  >
-                    <img
-                      src={c.image}
-                      alt={c.address}
-                      className="w-full h-40 object-cover"
-                    />
-                    <div className="p-3">
-                      <div className="text-sm text-slate-500">{c.address}</div>
-                      <div className="font-semibold mt-1">{c.price}</div>
-                      <div className="text-xs text-slate-400 mt-1">
-                        {c.beds} Beds • {c.baths} Baths • {c.sqft} Sq Ft
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* History & Neighborhood */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-lg font-semibold mb-3">Property History</h2>
-                <div className="divide-y divide-gray-100 text-sm text-slate-600">
-                  {property.history.map((h, i) => (
-                    <div
-                      key={i}
-                      className="py-3 flex justify-between items-start"
-                    >
-                      <div>
-                        <div className="font-medium">{h.date}</div>
-                        <div className="text-xs text-slate-400">{h.source}</div>
-                      </div>
-                      <div className="flex-1 mx-4">{h.detail}</div>
-                      <div className="font-semibold">{h.price}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow">
                 <h2 className="text-lg font-semibold mb-3">Neighborhood</h2>
                 <p className="text-sm text-slate-700 mb-4">
-                  {property.neighborhood.summary}
+                  {property?.neighborhood?.summary}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  {property.neighborhood.highlights.map((h, i) => (
+                  {property?.neighborhood?.highlights?.map((h, i) => (
                     <div key={i} className="flex gap-3 items-start">
                       <div className="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center">
                         <span className="text-lg">{h.icon}</span>
@@ -364,112 +489,236 @@ export default function PropertyDetails() {
                     </div>
                   ))}
                 </div>
-
-                <div className="mt-4">
-                  <iframe
-                    title="map"
-                    src={property.mapEmbedUrl}
-                    className="w-full h-36 rounded"
-                    loading="lazy"
-                  />
-                </div>
               </div>
             </div>
           </div>
+
+          {/* Schedule Tour Modal */}
+          {openModal && (
+            <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+              <div className="bg-white rounded-2xl shadow-lg w-[90%] max-w-md p-6 relative animate-fadeIn">
+                {/* Close button */}
+                <button
+                  onClick={() => setOpenModal(false)}
+                  className="absolute top-3 right-3 text-slate-500 hover:text-slate-700"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                <h2 className="text-xl font-semibold text-green-900 mb-4 text-center">
+                  Schedule a Property Tour
+                </h2>
+
+                <form
+                  onSubmit={handleTourSchedule}
+                  className="space-y-4"
+                  noValidate
+                >
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={tourForm.name}
+                      onChange={handleChangeTourForm}
+                      required
+                      className={`w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                        errors.name
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-yellow-500"
+                      }`}
+                      placeholder="Enter your Full name"
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={tourForm.email}
+                      onChange={handleChangeTourForm}
+                      name="email"
+                      required
+                      className={`w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                        errors.email
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-yellow-500"
+                      }`}
+                      placeholder="Enter your email address"
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.email}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      value={tourForm.phone}
+                      onChange={handleChangeTourForm}
+                      name="phone"
+                      required
+                      className={`w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                        errors.phone
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-yellow-500"
+                      }`}
+                      placeholder="Enter your phone number"
+                    />
+                    {errors.phone && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.phone}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Preferred Date
+                    </label>
+                    <input
+                      type="date"
+                      name="date"
+                      value={tourForm.date}
+                      onChange={(e) => {
+                        const { value } = e.target;
+                        const today = new Date().toISOString().split("T")[0];
+
+                        if (value < today) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            date: "You cannot select a past date.",
+                          }));
+                        } else {
+                          setErrors((prev) => ({ ...prev, date: "" }));
+                          handleChangeTourForm(e); // ✅ Only call update when valid
+                        }
+                      }}
+                      required
+                      min={new Date().toISOString().split("T")[0]} // ✅ UI prevention
+                      className={`w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                        errors.date
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-yellow-500"
+                      }`}
+                    />
+                    {errors.date && (
+                      <p className="text-red-500 text-sm mt-1">{errors.date}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Preferred Time
+                    </label>
+                    <input
+                      type="time"
+                      name="time"
+                      value={tourForm.time}
+                      onChange={handleChangeTourForm}
+                      required
+                      className={`w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                        errors.time
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-yellow-500"
+                      }`}
+                    />
+                    {errors.time && (
+                      <p className="text-red-500 text-sm mt-1">{errors.time}</p>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition"
+                  >
+                    {loading ? "Confirming ..." : "Confirm Tour"}
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
 
           {/* Right Sidebar */}
           <aside className="space-y-6">
             <div className="bg-white p-6 rounded-lg shadow">
               <div className="flex gap-4 items-center">
                 <img
-                  src={property.agent.avatar}
-                  alt={property.agent.name}
+                  src={property?.agent?.avatar}
+                  alt={property?.agent?.name}
                   className="w-16 h-16 rounded-full object-cover"
                 />
                 <div>
                   <div className="text-xs text-slate-400">Listed By</div>
-                  <div className="font-semibold">{property.agent.name}</div>
+                  <div className="font-semibold">Grace Route Limited</div>
                   <div className="text-xs text-slate-500">
-                    {property.agent.office}
+                    2 Julius Adelusi Street Guzape, Abuja
                   </div>
                 </div>
               </div>
 
               <div className="mt-6 space-y-3">
+                <h2 className="text-xl font-semibold text-green-900 mb-4">
+                  Tour with a Grace Route Agent
+                </h2>
+
+                <button
+                  onClick={() => setOpenModal(true)}
+                  className="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition"
+                >
+                  Schedule a Tour
+                </button>
+                <div className="flex items-center my-4">
+                  <div className="flex-1 h-px bg-slate-200"></div>
+                  <span className="px-3 text-slate-500 text-sm font-medium">
+                    OR
+                  </span>
+                  <div className="flex-1 h-px bg-slate-200"></div>
+                </div>
                 <a
                   href={`tel:${property.agent.phone}`}
                   className="block w-full text-center py-3 rounded-lg bg-amber-600 text-white font-medium"
                 >
                   Call Agent
                 </a>
-                <button className="w-full py-2 border rounded-lg text-amber-600 font-medium">
-                  Request Showing
-                </button>
-                <button className="w-full py-2 border rounded-lg text-slate-700">
-                  Share Listing
-                </button>
               </div>
 
               <div className="mt-6 text-sm text-slate-600 border-t pt-4">
                 <div className="flex justify-between mb-2">
                   <div>Price</div>
                   <div className="font-semibold text-slate-900">
-                    {property.price}
+                    ₦{propertyDetail?.price?.toLocaleString()}
                   </div>
                 </div>
                 <div className="flex justify-between">
                   <div>MLS#</div>
-                  <div className="text-slate-500">{property.mls}</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="font-semibold mb-3">Mortgage Estimate</h3>
-              <div className="space-y-3 text-sm">
-                <input
-                  value={downPercent}
-                  onChange={(e) => setDownPercent(e.target.value)}
-                  className="w-full border rounded-lg p-2"
-                  placeholder="Down %"
-                />
-                <input
-                  value={interest}
-                  onChange={(e) => setInterest(e.target.value)}
-                  className="w-full border rounded-lg p-2"
-                  placeholder="Interest %"
-                />
-                <input
-                  value={termYears}
-                  onChange={(e) => setTermYears(e.target.value)}
-                  className="w-full border rounded-lg p-2"
-                  placeholder="Term (years)"
-                />
-                <div className="flex gap-2">
-                  <div className="flex-1">
-                    <div className="text-xs text-slate-500">Est. monthly</div>
-                    <div className="text-lg font-semibold">
-                      ₦{calcMortgage()}
-                    </div>
-                  </div>
-                  <button className="px-4 py-2 bg-amber-600 text-white rounded-lg">
-                    Recalc
-                  </button>
+                  <div className="text-slate-500">{propertyDetail?.userId}</div>
                 </div>
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow text-sm text-slate-500">
-              Advertisement / Local services
+              Advertisement
             </div>
           </aside>
         </div>
-
-        {/* Footer */}
-        <div className="mt-8 text-xs text-slate-500 text-center">
-          © Your Real Estate Company — All rights reserved
-        </div>
+        <h2 className="text-lg font-bold mb-10">
+          Comparable Listings for {propertyDetail?.property_name}
+        </h2>
+        <ComparableListings property={comparableProperties} />
       </div>
     </div>
   );
 }
+
+export default PropertyDetails;

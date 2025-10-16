@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Search, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { findPropertyLocations, searchProperty } from "../reducers/userReducer";
-import { getFavourites, toggleFavourite } from "../reducers/favouriteReducer";
+import { getFavourites } from "../reducers/favouriteReducer";
 import { useToast } from "../toastContext/useToast";
 import PropertyCard from "./PropertyCard"; // adjust path if your folder is different
 
