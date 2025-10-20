@@ -3,6 +3,7 @@ import userReducer from "../reducers/userReducer";
 import favouritesReducer from "../reducers/favouriteReducer";
 import propertyReducer from "../reducers/propertyReducer";
 import messageReducer from "../reducers/messageReducer";
+import ordersReducer from "../reducers/ordersReducer";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import { persistStore, persistReducer } from "redux-persist";
 
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   favourites: favouritesReducer,
   property: propertyReducer,
   message: messageReducer,
+  orders: ordersReducer,
 });
 
 const persistConfig = {

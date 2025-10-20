@@ -6,12 +6,9 @@ export const getPropertyDetails = createAsyncThunk(
   "property/getPropertyDetails",
   async (id, { rejectWithValue }) => {
     try {
-      console.log("🧩 Thunk triggered with ID:", id);
       const response = await API.get(`/auth/view-property-listing/${id}`, {
         withCredentials: true,
       });
-
-      console.log("Response from getPropertyDetails API:", response.data);
 
       const { message, data } = response.data;
       return { message, data }; // { action: "added" | "removed", data: {...} }
@@ -37,6 +34,27 @@ export const getComparableProperties = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch property details"
+      );
+    }
+  }
+);
+
+export const listProperty = createAsyncThunk(
+  "property/listProperty",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await API.post("user/upload-property", formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const { message, data } = response.data;
+      return { message, data };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "failed to list a property"
       );
     }
   }
@@ -76,6 +94,17 @@ const propertySlice = createSlice({
         state.comparableProperties = action.payload.data;
       })
       .addCase(getComparableProperties.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(listProperty.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(listProperty.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(listProperty.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

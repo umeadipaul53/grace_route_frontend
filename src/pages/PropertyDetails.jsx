@@ -19,6 +19,7 @@ import {
   Heart,
 } from "lucide-react";
 import { secheduleTour } from "../reducers/messageReducer";
+import DOMPurify from "dompurify";
 
 function PropertyDetails() {
   const { showToast } = useToast();
@@ -395,8 +396,21 @@ function PropertyDetails() {
                 <h2 className="font-semibold text-lg mb-3">
                   Property Description
                 </h2>
-                <p className="text-sm text-slate-700 leading-relaxed">
-                  {propertyDetail?.description}
+
+                <p
+                  className="prose max-w-none text-sm text-slate-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(
+                      propertyDetail?.description || ""
+                    ),
+                  }}
+                />
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h2 className="font-semibold text-lg mb-3">Other Info</h2>
+
+                <p className=" text-sm text-slate-700 leading-relaxed">
+                  {propertyDetail?.otherInfo}
                 </p>
               </div>
             </div>

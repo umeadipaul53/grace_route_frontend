@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 export function Card({ children, className = "" }) {
   return (
     <div className={`rounded-2xl shadow-md bg-white ${className}`}>
@@ -11,6 +13,8 @@ export function CardContent({ children, className = "" }) {
 }
 
 export default function JoinGraceRouteCard() {
+  const navigate = useNavigate();
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-4xl mx-auto">
@@ -24,7 +28,10 @@ export default function JoinGraceRouteCard() {
               empowered in your real estate journey your way.
             </p>
           </div>
-          <button className="relative border-2 border-green-950 px-6 py-2 font-semibold text-amber-800 group">
+          <button
+            onClick={() => navigate("/signup")}
+            className="relative border-2 border-green-950 px-6 py-2 font-semibold text-amber-800 group"
+          >
             GET STARTED
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gray-800 group-hover:w-0 transition-all duration-300"></span>
             <span className="absolute right-0 top-0 h-full w-0.5 bg-gray-800 group-hover:h-0 transition-all duration-300"></span>

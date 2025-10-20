@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Pencil,
-  Trash2,
-  Search,
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  Eye,
-} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { userBuyOrders } from "../../../reducers/ordersReducer";
+import { userPropertyListing } from "../../../reducers/ordersReducer";
+import { Plus } from "lucide-react";
 
-function BuyOrder() {
+function ListedProperties({ onCardClick }) {
   const dispatch = useDispatch();
   const { loading, pagination, orders } = useSelector((state) => state.orders);
   const startIndex = (pagination?.currentPage - 1) * pagination?.limit + 1;
@@ -21,11 +13,11 @@ function BuyOrder() {
     pagination?.totalResults
   );
 
-  const [status, setStatus] = useState("settled");
+  const [status, setStatus] = useState("available");
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    dispatch(userBuyOrders({ status, page }));
+    dispatch(userPropertyListing({ status, page }));
   }, [dispatch, status, page]);
 
   const handleChange = (e) => setStatus(e.target.value);
@@ -36,10 +28,12 @@ function BuyOrder() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold text-green-950">
-            Buy Orders{" "}
+            My Listed Properties{" "}
             <span className="text-gray-400 text-base">({orders.length})</span>
           </h2>
-          <p className="text-gray-500 text-sm mt-1">View all your buy orders</p>
+          <p className="text-gray-500 text-sm mt-1">
+            View all your listed property
+          </p>
         </div>
 
         {/* Search + Sort (responsive) */}
@@ -52,7 +46,7 @@ function BuyOrder() {
             <option value="" disabled>
               Status
             </option>
-            <option value="settled">Approved</option>
+            <option value="available">Approved</option>
             <option value="pending">Pending</option>
             <option value="rejected">Rejected</option>
           </select>
@@ -72,7 +66,7 @@ function BuyOrder() {
         {loading ? (
           <p className="text-center py-10">Loading orders...</p>
         ) : orders.length === 0 ? (
-          <p className="text-center py-10">No orders available</p>
+          <p className="text-center py-10">No {status} properties available</p>
         ) : (
           orders.map((p, i) => (
             <article
@@ -83,8 +77,8 @@ function BuyOrder() {
               {/* Mobile layout */}
               <div className="md:hidden flex gap-3 items-start p-4">
                 <img
-                  src={p?.property?.images[0]?.url}
-                  alt={p?.property?.images[0]?.public_id}
+                  src={p?.images[0]?.url}
+                  alt={p?.images[0]?.public_id}
                   className="w-28 h-20 object-cover rounded-lg shrink-0 border border-gray-200"
                 />
                 <div className="flex-1 min-w-0">
@@ -93,37 +87,35 @@ function BuyOrder() {
                       <div className="flex items-center gap-2">
                         <span
                           className={`text-[11px] font-semibold px-2 py-0.5 rounded-md ${
-                            p?.property?.status === "pending"
+                            p?.status === "pending"
                               ? "bg-blue-50 text-green-700"
                               : "bg-green-50 text-blue-700"
                           }`}
                         >
-                          {p?.property?.status === "pending"
+                          {p?.status === "pending"
                             ? "in progress..."
                             : p.status === "rejected"
                             ? "Rejected"
                             : "Approved"}
                         </span>
                         <h3 className="text-xs  text-gray-900 truncate">
-                          {p?.property?.homeType}
+                          {p?.homeType}
                         </h3>
                       </div>
                       <p className="text-sm font-semibold text-gray-500 mt-1 truncate">
-                        {p?.property?.property_name}
+                        {p?.property_name}
                       </p>
                       <p className="text-sm font-semibold text-green-900 mt-2">
-                        ₦{p?.property?.price?.toLocaleString()}
+                        ₦{p?.price?.toLocaleString()}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between mt-3 gap-3">
                     <div className="flex items-center gap-3 text-xs text-gray-500">
-                      <span>{p?.property?.plotArea}</span>
+                      <span>{p?.plotArea}</span>
                       <span className="hidden sm:inline">•</span>
-                      <span className="text-gray-600">
-                        {p?.property?.property_type}
-                      </span>
+                      <span className="text-gray-600">{p?.property_type}</span>
                     </div>
                   </div>
                 </div>
@@ -134,54 +126,52 @@ function BuyOrder() {
                 {/* Title (col-span-5) */}
                 <div className="col-span-5 flex items-center gap-4">
                   <img
-                    src={p?.property?.images[0].url}
-                    alt={p?.property?.images[0].public_id}
+                    src={p?.images[0].url}
+                    alt={p?.images[0].public_id}
                     className="w-20 h-16 object-cover rounded-lg border border-gray-200"
                   />
                   <div>
                     <span
                       className={`text-[11px] font-semibold px-2 py-0.5 rounded-md ${
-                        p?.property?.status === "pending"
+                        p?.status === "pending"
                           ? "bg-blue-50 text-green-700"
                           : "bg-green-50 text-blue-700"
                       }`}
                     >
-                      {p?.property?.status === "pending"
+                      {p?.status === "pending"
                         ? "in progress..."
-                        : p?.property?.status === "rejected"
+                        : p?.status === "rejected"
                         ? "Rejected"
                         : "Approved"}
                     </span>
                     <h3 className="font-semibold text-gray-800">
-                      {p?.property?.property_name}
+                      {p?.property_name}
                     </h3>
-                    <p className="text-xs text-gray-500">
-                      {p?.property?.homeType}
-                    </p>
+                    <p className="text-xs text-gray-500">{p?.homeType}</p>
                     <p className="text-sm font-semibold text-green-900">
-                      {p?.property?.bedrooms}
+                      {p?.bedrooms}
                     </p>
                   </div>
                 </div>
 
                 {/* Date */}
                 <div className="col-span-2 text-sm text-gray-600">
-                  ₦{p?.property?.price?.toLocaleString()}
+                  ₦{p?.price?.toLocaleString()}
                 </div>
 
                 {/* Status */}
                 <div className="col-span-2 text-sm text-gray-600">
-                  {p?.property?.plotArea}
+                  {p?.plotArea}
                 </div>
 
                 {/* Views */}
                 <div className="col-span-2 text-center text-sm text-gray-600">
-                  {p?.property?.location?.city} {p?.property?.location?.state}
+                  {p?.location?.city} {p?.location?.state}
                 </div>
 
                 {/* Actions */}
                 <div className="col-span-1 flex justify-center gap-3">
-                  {p?.property?.property_type}
+                  {p?.property_type}
                 </div>
               </div>
             </article>
@@ -226,8 +216,17 @@ function BuyOrder() {
       </div>
 
       {/* CTA */}
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={() => onCardClick("list")}
+          className="flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white px-5 py-3 rounded-2xl text-sm font-semibold shadow-md transition"
+        >
+          <Plus size={18} />
+          List a Property
+        </button>
+      </div>
     </section>
   );
 }
 
-export default BuyOrder;
+export default ListedProperties;

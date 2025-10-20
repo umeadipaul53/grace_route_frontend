@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const slides = [
@@ -16,7 +17,7 @@ const Hero = () => {
       title: "Secure the Future You Deserve",
       subtitle:
         "From prime locations to unbeatable returns, discover properties worth investing in.",
-      cta: "Book an Inspection",
+      cta: "About us",
     },
     {
       id: 3,
@@ -45,6 +46,8 @@ const Hero = () => {
     return () => clearInterval(timer);
   }, [slides.length]);
 
+  const navigate = useNavigate();
+
   return (
     <section className="relative h-[75vh] md:h-[90vh] w-full overflow-hidden">
       {slides.map((slide, index) => (
@@ -72,7 +75,18 @@ const Hero = () => {
             <p className="mt-4 text-lg md:text-2xl max-w-2xl mx-auto drop-shadow-md">
               {slide.subtitle}
             </p>
-            <button className="mt-6 px-6 py-3 border-2 border-gold-500 text-gold-500 bg-transparent hover:bg-gold-500 hover:text-white transition rounded-lg font-semibold shadow-lg">
+            <button
+              onClick={() =>
+                slide.cta === "Contact Us"
+                  ? navigate("/contact-us")
+                  : slide.cta === "Get Started Today"
+                  ? navigate("/signup")
+                  : slide.cta === "Browse Listings"
+                  ? navigate("/property-listing")
+                  : navigate("/about-us")
+              }
+              className="mt-6 px-6 py-3 border-2 border-gold-500 text-gold-500 bg-transparent hover:bg-gold-500 hover:text-white transition rounded-lg font-semibold shadow-lg"
+            >
               {slide.cta}
             </button>
           </div>

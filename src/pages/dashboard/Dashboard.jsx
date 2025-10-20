@@ -5,9 +5,9 @@ import ProfilePicture from "./components/ProfilePicture";
 import AccountSettings from "./components/AccountSettings";
 import MyGoals from "./components/MyGoals";
 import MyFavorites from "./components/MyFavorites";
-import MySavedSearches from "./components/MySavedSearches";
 import BuyOrder from "./components/BuyOrder";
-import ListProperty from "./components/ListProperty";
+import ListedProperties from "./components/ListedProperties";
+import ListAProperty from "./components/ListAProperty";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -33,10 +33,9 @@ const Dashboard = () => {
   const tabs = [
     { id: "account", label: "Account Settings" },
     { id: "goals", label: "My Goals" },
-    { id: "saved", label: "My Saved Searches" },
     { id: "favorites", label: "My Favorites" },
     { id: "buy", label: "Buy Orders" },
-    { id: "sell", label: "List My Property" },
+    { id: "sell", label: "My Listed Properties" },
   ];
 
   const renderContent = () => {
@@ -49,14 +48,14 @@ const Dashboard = () => {
         return <ProfilePicture onBack={() => handleTabClick("account")} />;
       case "goals":
         return <MyGoals />;
-      case "saved":
-        return <MySavedSearches />;
       case "favorites":
         return <MyFavorites />;
       case "buy":
         return <BuyOrder />;
       case "sell":
-        return <ListProperty />;
+        return <ListedProperties onCardClick={handleTabClick} />;
+      case "list":
+        return <ListAProperty />;
       default:
         return null;
     }

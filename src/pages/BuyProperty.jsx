@@ -1,6 +1,7 @@
 // BuyerGuide.jsx
 import React, { useState } from "react";
 import HeroSection from "../components/HeroSection";
+import { Link } from "react-router-dom";
 
 /**
  * Pure React component styled with Tailwind.
@@ -84,12 +85,12 @@ function BuyProperty() {
               you'll make the most informed decisions. This guide walks you
               through each step with confidence.
             </p>
-            <a
-              href="#"
+            <Link
+              to="/property-listing"
               className="inline-block mt-6 px-6 py-3 text-base md:text-lg rounded-md font-semibold bg-gradient-to-r from-sky-700 to-sky-500 text-white shadow hover:opacity-90 transition"
             >
               Buy a Property
-            </a>
+            </Link>
           </div>
 
           {/* Slider Section */}
@@ -261,12 +262,12 @@ function BuyProperty() {
                 property of your dreams.
               </p>
 
-              <a
-                href="#find-agent"
+              <Link
+                to="/signup"
                 className="mt-4 inline-block px-4 py-2 bg-white text-sky-700 rounded-md font-medium"
               >
                 JOIN US
-              </a>
+              </Link>
             </aside>
           </div>
         </section>
