@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { logoutUser } from "./reducers/userReducer";
 
@@ -35,10 +35,25 @@ import {
   AdminProtectedRoute,
 } from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
+import AdminDashboard from "./admin/AdminDashboard";
+import AdminLayout from "./layouts/AdminLayout";
+import BuyOrders from "./admin/BuyOrders";
+import ListingOrders from "./admin/ListingOrders";
+import ManageEstate from "./admin/ManageEstate";
+import ManageNews from "./admin/ManageNews";
+import SendMessage from "./admin/SendMessage";
+import ToursInvite from "./admin/ToursInvite";
+import ManageUsers from "./admin/ManageUsers";
+import ListProperty from "./admin/ListProperty";
+import Settings from "./admin/Settings";
 
 function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // ✅ Hide Navbar/Footer for any route starting with "/admin"
+  const isAdminRoute = /^\/admin(\/|$)/.test(location.pathname);
 
   const ProfilePictureRoute = () => {
     const navigate = useNavigate();
@@ -62,7 +77,9 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      {/* ✅ Navbar hidden for all admin routes */}
+      {!isAdminRoute && <Navbar />}
+
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -85,6 +102,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/verify-user-account" element={<VerifyUserAccount />} />
+
           <Route
             path="/my-account"
             element={
@@ -109,10 +127,33 @@ function App() {
               </UserProtectedRoute>
             }
           />
+
+          {/* ✅ All admin routes (no Navbar/Footer) */}
+          <Route
+            path="/admin"
+            element={
+              <AdminProtectedRoute>
+                <AdminLayout />
+              </AdminProtectedRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<ManageUsers />} />
+            <Route path="buy-orders" element={<BuyOrders />} />
+            <Route path="listing-orders" element={<ListingOrders />} />
+            <Route path="list-property" element={<ListProperty />} />
+            <Route path="tours-invite" element={<ToursInvite />} />
+            <Route path="send-message" element={<SendMessage />} />
+            <Route path="manage-news" element={<ManageNews />} />
+            <Route path="estate" element={<ManageEstate />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      <Footer />
+
+      {/* ✅ Footer hidden for all admin routes */}
+      {!isAdminRoute && <Footer />}
     </div>
   );
 }

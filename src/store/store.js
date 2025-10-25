@@ -1,5 +1,6 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import userReducer from "../reducers/userReducer";
+import usersReducer from "../reducers/usersReducer";
 import favouritesReducer from "../reducers/favouriteReducer";
 import propertyReducer from "../reducers/propertyReducer";
 import messageReducer from "../reducers/messageReducer";
@@ -9,6 +10,7 @@ import { persistStore, persistReducer } from "redux-persist";
 
 const rootReducer = combineReducers({
   user: userReducer,
+  users: usersReducer,
   favourites: favouritesReducer,
   property: propertyReducer,
   message: messageReducer,

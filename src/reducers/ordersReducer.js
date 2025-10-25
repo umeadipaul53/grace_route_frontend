@@ -51,13 +51,64 @@ export const userPropertyListing = createAsyncThunk(
   }
 );
 
+// ✅ fetch all buy orders
+export const fetchAllBuyOrders = createAsyncThunk(
+  "orders/fetchAllBuyOrders",
+  async ({ status, page }, { rejectWithValue }) => {
+    try {
+      const response = await API.get("/admin/view-buy-order", {
+        withCredentials: true,
+        params: {
+          status,
+          page,
+        },
+      });
+
+      const { count, pagination, data } = response.data;
+      return { count, pagination, data };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch buy order"
+      );
+    }
+  }
+);
+
+//--- SETTLE BUY ORDERS ---
+export const settleBuyOrders = createAsyncThunk(
+  "orders/settleBuyOrders",
+  async (orderId, { rejectWithValue }) => {
+    try {
+      const response = await API.post(
+        `/admin/settle-buy-order/${orderId}`,
+        {},
+        { withCredentials: true }
+      );
+
+      const { message, data } = response.data;
+      return { message, data };
+    } catch (err) {
+      return rejectWithValue(
+        err?.response?.data?.message || "failed to settle buy order"
+      );
+    }
+  }
+);
+
 const ordersSlice = createSlice({
   name: "orders",
   initialState: {
     orders: [], // array of property objects
     loading: false,
     count: 0,
-    pagination: {},
+    pagination: {
+      currentPage: 1,
+      totalPages: 1,
+      totalResults: 0,
+      limit: 10,
+      hasNextPage: false,
+      hasPrevPage: false,
+    },
     error: null,
   },
   reducers: {},
@@ -89,6 +140,33 @@ const ordersSlice = createSlice({
         state.count = action.payload.count || 0;
       })
       .addCase(userPropertyListing.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      //--- GET ALL BUY ORDERS ----
+      .addCase(fetchAllBuyOrders.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchAllBuyOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders = action.payload.data || [];
+        state.pagination = action.payload.pagination || {};
+        state.count = action.payload.count || 0;
+      })
+      .addCase(fetchAllBuyOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      //--- SETTLE BUY ORDERS ----
+      .addCase(settleBuyOrders.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(settleBuyOrders.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(settleBuyOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

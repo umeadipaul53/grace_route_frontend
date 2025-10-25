@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  Pencil,
-  Trash2,
-  Search,
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  Eye,
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userBuyOrders } from "../../../reducers/ordersReducer";
 
 function BuyOrder() {
   const dispatch = useDispatch();
-  const { loading, pagination, orders } = useSelector((state) => state.orders);
+  const {
+    loading,
+    pagination = {},
+    orders = [],
+  } = useSelector((state) => state.orders);
   const startIndex = (pagination?.currentPage - 1) * pagination?.limit + 1;
   const endIndex = Math.min(
     pagination?.currentPage * pagination?.limit,
@@ -37,7 +31,7 @@ function BuyOrder() {
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold text-green-950">
             Buy Orders{" "}
-            <span className="text-gray-400 text-base">({orders.length})</span>
+            <span className="text-gray-400 text-base">({orders?.length})</span>
           </h2>
           <p className="text-gray-500 text-sm mt-1">View all your buy orders</p>
         </div>
@@ -71,10 +65,10 @@ function BuyOrder() {
         </div>
         {loading ? (
           <p className="text-center py-10">Loading orders...</p>
-        ) : orders.length === 0 ? (
+        ) : orders?.length === 0 ? (
           <p className="text-center py-10">No orders available</p>
         ) : (
-          orders.map((p, i) => (
+          orders?.map((p, i) => (
             <article
               key={i}
               className="border-b border-gray-100 last:border-0"
@@ -83,8 +77,8 @@ function BuyOrder() {
               {/* Mobile layout */}
               <div className="md:hidden flex gap-3 items-start p-4">
                 <img
-                  src={p?.property?.images[0]?.url}
-                  alt={p?.property?.images[0]?.public_id}
+                  src={p?.property?.images?.[0]?.url}
+                  alt={p?.property?.images?.[0]?.public_id}
                   className="w-28 h-20 object-cover rounded-lg shrink-0 border border-gray-200"
                 />
                 <div className="flex-1 min-w-0">
@@ -100,7 +94,7 @@ function BuyOrder() {
                         >
                           {p?.property?.status === "pending"
                             ? "in progress..."
-                            : p.status === "rejected"
+                            : p?.property?.status === "rejected"
                             ? "Rejected"
                             : "Approved"}
                         </span>
@@ -134,8 +128,8 @@ function BuyOrder() {
                 {/* Title (col-span-5) */}
                 <div className="col-span-5 flex items-center gap-4">
                   <img
-                    src={p?.property?.images[0].url}
-                    alt={p?.property?.images[0].public_id}
+                    src={p?.property?.images?.[0]?.url}
+                    alt={p?.property?.images?.[0]?.public_id}
                     className="w-20 h-16 object-cover rounded-lg border border-gray-200"
                   />
                   <div>
@@ -212,7 +206,7 @@ function BuyOrder() {
               Prev
             </button>
             <span className="text-sm font-medium">
-              Page {pagination.currentPage} of {pagination.totalPages}
+              Page {pagination?.currentPage} of {pagination?.totalPages}
             </span>
             <button
               className="px-3 py-1 border rounded disabled:opacity-50"

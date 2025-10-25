@@ -21,25 +21,14 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // ✅ Redirect user only when successfully logged in
-  // useEffect(() => {
-  //   let timeout;
-
-  //   if (isAuthenticated && !loading && !error) {
-  //     showToast("Login successful! Redirecting...", "success");
-  //     const route = user?.role === "admin" ? "/admin-account" : "/my-account";
-  //     timeout = setTimeout(() => navigate(route), 500);
-  //   }
-
-  //   return () => clearTimeout(timeout);
-  // }, [isAuthenticated, loading, error, user, navigate]);
-
   useEffect(() => {
     if (isAuthenticated && !loading && !error) {
       // get favourites
-      dispatch(getFavourites());
+      if (user?.role === "user") {
+        dispatch(getFavourites());
+      }
 
-      const route = user?.role === "admin" ? "/admin-account" : "/my-account";
+      const route = user?.role === "admin" ? "/admin" : "/my-account";
       showToast("Login successful! Redirecting...", "success");
       const timeout = setTimeout(() => navigate(route), 800);
       return () => clearTimeout(timeout);
