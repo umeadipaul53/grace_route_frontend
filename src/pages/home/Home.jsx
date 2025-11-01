@@ -13,6 +13,7 @@ import Highlights from "./components/Highlights";
 import Values from "./components/Values";
 import TeamMembers from "./components/TeamMembers";
 import VisionMission from "./components/VisionMission";
+import EstateSection from "./components/EstateSection";
 
 function Home() {
   return (
@@ -22,6 +23,7 @@ function Home() {
       <SearchSection />
       <Features />
       <CoreValuesSlide />
+      <EstateSection />
       <WhyUs />
       <Highlights />
       <PropertyListing />

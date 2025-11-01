@@ -89,10 +89,10 @@ const Navbar = () => {
               📞 +234 801 234 5678
             </a>
             <a
-              href="mailto:info@realestate.com"
+              href="mailto:info@gracerouteltd.com"
               className="text-gold block sm:inline"
             >
-              ✉ info@realestate.com
+              ✉ info@gracerouteltd.com
             </a>
           </div>
 
@@ -200,7 +200,9 @@ const Navbar = () => {
                 </li>
               </ul>
             </li>
-
+            <li>
+              <Link to="/estates">Estates</Link>
+            </li>
             <li>
               <Link to="/buy">Buy</Link>
             </li>
@@ -293,56 +295,13 @@ const Navbar = () => {
             </Link>
 
             {/* Dashboard Submenu (mobile only) */}
-            <div>
-              <button
-                onClick={() => setDashboardOpen(!dashboardOpen)}
-                className="w-full text-left py-2 flex justify-between items-center"
-              >
-                My Account
-                <span>{dashboardOpen ? "▲" : "▼"}</span>
-              </button>
-              {dashboardOpen && (
-                <div className="ml-4 space-y-1 text-gray-600">
-                  <button
-                    onClick={() => handleDashboardClick("account")}
-                    className="block w-full text-left py-1"
-                  >
-                    Account Settings
-                  </button>
-                  <button
-                    onClick={() => handleDashboardClick("goals")}
-                    className="block w-full text-left py-1"
-                  >
-                    My Goals
-                  </button>
-                  <button
-                    onClick={() => handleDashboardClick("saved")}
-                    className="block w-full text-left py-1"
-                  >
-                    My Saved Searches
-                  </button>
-                  <button
-                    onClick={() => handleDashboardClick("favorites")}
-                    className="block w-full text-left py-1"
-                  >
-                    My Favorites
-                  </button>
-                  <button
-                    onClick={() => handleDashboardClick("buy")}
-                    className="block w-full text-left py-1"
-                  >
-                    Buy Orders
-                  </button>
-                  <button
-                    onClick={() => handleDashboardClick("sell")}
-                    className="block w-full text-left py-1"
-                  >
-                    List My Property
-                  </button>
-                </div>
-              )}
-            </div>
-
+            <Link
+              to="/estates"
+              className="block py-2"
+              onClick={handleLinkClick}
+            >
+              Estates
+            </Link>
             <Link to="/buy" className="block py-2" onClick={handleLinkClick}>
               Buy
             </Link>
@@ -376,6 +335,50 @@ const Navbar = () => {
               </>
             ) : (
               <>
+                <div>
+                  <button
+                    onClick={() => setDashboardOpen(!dashboardOpen)}
+                    className="w-full text-left py-2 flex justify-between items-center"
+                  >
+                    My Account
+                    <span>{dashboardOpen ? "▲" : "▼"}</span>
+                  </button>
+                  {dashboardOpen && (
+                    <div className="ml-4 space-y-1 text-gray-600">
+                      <button
+                        onClick={() => handleDashboardClick("account")}
+                        className="block w-full text-left py-1"
+                      >
+                        Account Settings
+                      </button>
+                      <button
+                        onClick={() => handleDashboardClick("goals")}
+                        className="block w-full text-left py-1"
+                      >
+                        My Goals
+                      </button>
+
+                      <button
+                        onClick={() => handleDashboardClick("favorites")}
+                        className="block w-full text-left py-1"
+                      >
+                        My Favorites
+                      </button>
+                      <button
+                        onClick={() => handleDashboardClick("buy")}
+                        className="block w-full text-left py-1"
+                      >
+                        Buy Orders
+                      </button>
+                      <button
+                        onClick={() => handleDashboardClick("sell")}
+                        className="block w-full text-left py-1"
+                      >
+                        List My Property
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left py-2"

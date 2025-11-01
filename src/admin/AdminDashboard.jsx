@@ -21,6 +21,7 @@ import { fetchAllUsers } from "../reducers/usersReducer";
 import { getAllProperties } from "../reducers/propertyReducer";
 import { getAllTourRequests } from "../reducers/messageReducer";
 import { fetchAllBuyOrders } from "../reducers/ordersReducer";
+import { getEstates } from "../reducers/estateReducer";
 
 function AdminDashboard() {
   const dispatch = useDispatch();
@@ -31,11 +32,16 @@ function AdminDashboard() {
     items,
     pagination,
   } = useSelector((state) => state.message);
+  const { items: estateCount } = useSelector((state) => state.estate);
   const { count: ordersCount } = useSelector((state) => state.orders);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
     dispatch(fetchAllUsers({ page }));
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getEstates());
   }, [dispatch]);
 
   useEffect(() => {
@@ -143,7 +149,9 @@ function AdminDashboard() {
 
           <div className="flex justify-between items-center mt-6">
             <p className="text-sm text-gray-500">Total Estate Created</p>
-            <span className="text-xl font-bold text-green-700">$210,000</span>
+            <span className="text-xl font-bold text-green-700">
+              {estateCount.length}
+            </span>
           </div>
         </div>
       </section>

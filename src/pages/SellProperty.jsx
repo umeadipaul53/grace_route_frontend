@@ -67,10 +67,10 @@ function SellProperty() {
   return (
     <div>
       <HeroSection
-        title="Buy Property"
-        sub_title="Find Your Perfect property"
-        highlight="with Grace Route Limited"
-        quote="Every great story begins at home. Let Grace Route Limited guide you to a property that matches your dreams, lifestyle, and future — where comfort meets lasting value."
+        title="Sell Property"
+        sub_title="Unlock the True Value "
+        highlight="of Your Property"
+        quote="Your property is more than a space — it’s an opportunity waiting to be maximized."
         backgroundImage="/career.png"
       />
       <main className="max-w-6xl mx-auto px-6 py-12 text-slate-900">

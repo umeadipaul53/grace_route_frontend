@@ -37,7 +37,7 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="/properties"
+                  href="/property-listing"
                   className="hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 rounded"
                 >
                   Properties
@@ -61,7 +61,7 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="/client-login"
+                  href="/login"
                   className="hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 rounded"
                 >
                   Client Login
@@ -96,57 +96,6 @@ const Footer = () => {
                   FAQ
                 </a>
               </li>
-              <li>
-                <a
-                  href="/docs"
-                  className="flex items-center gap-2 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 rounded"
-                >
-                  {/* docs icon */}
-                  <svg
-                    className="w-4 h-4 flex-shrink-0"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM6 20V4h7v5h5v11H6z" />
-                  </svg>
-                  Documentation
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#livechat"
-                  className="flex items-center gap-2 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 rounded"
-                >
-                  {/* chat icon */}
-                  <svg
-                    className="w-4 h-4 flex-shrink-0"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path d="M20 2H4a2 2 0 00-2 2v16l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" />
-                  </svg>
-                  Live Chat
-                </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:support@mshelhomes.com"
-                  className="flex items-center gap-2 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 rounded"
-                >
-                  {/* ticket icon */}
-                  <svg
-                    className="w-4 h-4 flex-shrink-0"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path d="M4 4h16v4H4V4zm0 6h16v10H4V10zm8 2a2 2 0 100 4 2 2 0 000-4z" />
-                  </svg>
-                  Submit a Ticket
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -163,7 +112,10 @@ const Footer = () => {
             </address>
             <p className="mt-2 text-sm">
               Email:{" "}
-              <a href="mailto:info@mshelhomes.com" className="hover:text-white">
+              <a
+                href="mailto:info@gracerouteltd.com"
+                className="hover:text-white"
+              >
                 info@gracerouteltd.com
               </a>
             </p>

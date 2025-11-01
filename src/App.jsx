@@ -46,6 +46,10 @@ import ToursInvite from "./admin/ToursInvite";
 import ManageUsers from "./admin/ManageUsers";
 import ListProperty from "./admin/ListProperty";
 import Settings from "./admin/Settings";
+import CreateNews from "./admin/CreateNews";
+import NewsDetails from "./pages/NewsDetails";
+import CreateEstate from "./admin/CreateEstate";
+import Estates from "./pages/Estates";
 
 function App() {
   const dispatch = useDispatch();
@@ -89,10 +93,12 @@ function App() {
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact-us" element={<Contact />} />
           <Route path="/find" element={<FindProperty />} />
+          <Route path="/news-details/:id" element={<NewsDetails />} />
           <Route path="/property-listing" element={<PropertyListing />} />
           <Route path="/property-details/:id" element={<PropertyDetails />} />
           <Route path="/buy" element={<BuyProperty />} />
           <Route path="/sell" element={<SellProperty />} />
+          <Route path="/estates" element={<Estates />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/cookies" element={<CookiesPolicy />} />
           <Route path="/faq" element={<FAQ />} />
@@ -147,6 +153,8 @@ function App() {
             <Route path="manage-news" element={<ManageNews />} />
             <Route path="estate" element={<ManageEstate />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="create-news" element={<CreateNews />} />
+            <Route path="create-estate" element={<CreateEstate />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
