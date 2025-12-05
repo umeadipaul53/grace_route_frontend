@@ -4,32 +4,27 @@ const partners = [
   {
     id: 1,
     name: "Partner 1",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
+    logo: "https://res.cloudinary.com/dtzesgkf0/image/upload/arnold_vaovzq.png",
   },
   {
     id: 2,
     name: "Partner 2",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
+    logo: "https://res.cloudinary.com/dtzesgkf0/image/upload/arnold_vaovzq.png",
   },
   {
     id: 3,
     name: "Partner 3",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+    logo: "https://res.cloudinary.com/dtzesgkf0/image/upload/MILLENIUM_CITY_fck7l6.png",
   },
   {
     id: 4,
     name: "Partner 4",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Amazon_logo.svg",
+    logo: "https://res.cloudinary.com/dtzesgkf0/image/upload/NEDKINGS_rcf1ug.jpg",
   },
   {
     id: 5,
     name: "Partner 5",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg",
-  },
-  {
-    id: 6,
-    name: "Partner 6",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
+    logo: "https://res.cloudinary.com/dtzesgkf0/image/upload/peak_value_h4scmu.jpg",
   },
 ];
 

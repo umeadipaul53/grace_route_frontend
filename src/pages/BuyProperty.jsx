@@ -14,37 +14,37 @@ const SLIDES = [
     id: 1,
     title: "Browse and Select Your Dream Property",
     text: "Explore our wide range of verified properties across different locations. Whether you’re looking for land, an apartment, or a luxury home, simply select the property that suits your budget and lifestyle.",
-    img: "/browser_property.jpg",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/browser_property_e6l66f.jpg",
   },
   {
     id: 2,
     title: "Submit a Purchase Request",
     text: "Once you’ve chosen a property, send a purchase request through our platform. Provide your details and preferred property, and our team will instantly receive your purchase order for processing.",
-    img: "/request_form.jpg",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/request_form_nx6e5n.jpg",
   },
   {
     id: 3,
     title: "Schedule an Inspection",
     text: "Before making any commitment, you’ll be invited for a physical or virtual inspection of the property. This allows you to confirm the property’s features, location, and authenticity with full transparency.",
-    img: "/land-inspection.jpg",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/land-inspection_k6frxo.jpg",
   },
   {
     id: 4,
     title: "Consultation and Agreement",
     text: "Our sales team will discuss your chosen property in detail — including documentation, pricing, and available payment plans. Once both parties agree on the terms, we proceed to the next step.",
-    img: "/consultation.jpg",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/consultation_m1ex9i.jpg",
   },
   {
     id: 5,
     title: "Make Secure Payment",
     text: "After final confirmation, payment is made only to Grace Route Limited’s official corporate account. This ensures full accountability and protection for your investment.",
-    img: "/payment.jpg",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/payment_udvnge.jpg",
   },
   {
     id: 6,
     title: "Documentation and Property Handover",
     text: "Once payment is verified, we prepare and sign all relevant legal documents such as the Deed of Assignment and Allocation Letter. The property ownership is then officially transferred to you.",
-    img: "/documentation.png",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/documentation_agcfxx.png",
   },
 ];
 
@@ -69,7 +69,7 @@ function BuyProperty() {
         sub_title="Find Your Perfect property"
         highlight="with Grace Route Limited"
         quote="Every great story begins at home. Let Grace Route Limited guide you to a property that matches your dreams, lifestyle, and future — where comfort meets lasting value."
-        backgroundImage="/career.png"
+        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/services_f1kdbd.png"
       />
       <main className="max-w-6xl mx-auto px-6 py-12 text-slate-900">
         {/* HERO / Slider */}
@@ -154,7 +154,7 @@ function BuyProperty() {
             <article className="bg-white rounded-lg shadow overflow-hidden border">
               <div className="h-60 w-full overflow-hidden">
                 <img
-                  src="/properties.png"
+                  src="https://res.cloudinary.com/dtzesgkf0/image/upload/properties_scjhae.png"
                   alt="Find the Right Agent"
                   className="object-cover w-full h-full"
                 />
@@ -172,7 +172,7 @@ function BuyProperty() {
             <article className="bg-white rounded-lg shadow overflow-hidden border">
               <div className="h-60 w-full overflow-hidden">
                 <img
-                  src="/communicate.png"
+                  src="https://res.cloudinary.com/dtzesgkf0/image/upload/communicate_gfrxwg.png"
                   alt="Communicate"
                   className="object-cover w-full h-full"
                 />
@@ -192,7 +192,7 @@ function BuyProperty() {
             <article className="bg-white rounded-lg shadow overflow-hidden border">
               <div className="h-60 w-full overflow-hidden">
                 <img
-                  src="/trust_process.jpg"
+                  src="https://res.cloudinary.com/dtzesgkf0/image/upload/trust_process_at5mvx.jpg"
                   alt="Trust the Process"
                   className="object-cover w-full h-full"
                 />
@@ -249,7 +249,7 @@ function BuyProperty() {
             <aside className="bg-gradient-to-br from-sky-800 to-sky-700 text-white rounded-lg p-5 shadow-lg flex flex-col items-center justify-center">
               <div className="w-full h-50 mb-4 overflow-hidden rounded-md">
                 <img
-                  src="/here_for_you.jpeg"
+                  src="https://res.cloudinary.com/dtzesgkf0/image/upload/here_for_you_whczr9.jpg"
                   alt="Tools visual"
                   className="object-cover w-full h-full"
                 />

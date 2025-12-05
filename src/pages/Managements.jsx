@@ -14,7 +14,7 @@ const Managements = () => {
     dedication of our leadership team. Together, we are committed to guiding
     clients through every stage of their real estate journey with expertise and
     trust."
-        backgroundImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=80"
+        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/services_f1kdbd.png"
       />
       <TeamMembers />
       <JoinGraceRouteCard />

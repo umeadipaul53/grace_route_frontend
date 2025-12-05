@@ -5,7 +5,7 @@ const Hero = () => {
   const slides = [
     {
       id: 1,
-      img: "/jason-dent-w3eFhqXjkZE-unsplash.jpg",
+      img: "https://res.cloudinary.com/dtzesgkf0/image/upload/WhatsApp_Image_2025-12-02_at_2.26.49_PM_txkces.jpg",
       title: "Find Your Dream Property with Confidence",
       subtitle:
         "Explore premium properties built with integrity, quality, and timeless value.",
@@ -13,7 +13,7 @@ const Hero = () => {
     },
     {
       id: 2,
-      img: "/francesca-tosolini-6japTIjUQoI-unsplash.jpg",
+      img: "https://res.cloudinary.com/dtzesgkf0/image/upload/francesca-tosolini-tHkJAMcO3QE-unsplash_thu6kl.jpg",
       title: "Secure the Future You Deserve",
       subtitle:
         "From prime locations to unbeatable returns, discover properties worth investing in.",
@@ -21,7 +21,7 @@ const Hero = () => {
     },
     {
       id: 3,
-      img: "/sean-pollock-PhYq704ffdA-unsplash.jpg",
+      img: "https://res.cloudinary.com/dtzesgkf0/image/upload/sean-pollock-PhYq704ffdA-unsplash_rjiihh.jpg",
       title: "Building More Than Houses, Building Communities",
       subtitle:
         "Join a trusted real estate family that puts people first and creates lasting value.",
@@ -29,7 +29,7 @@ const Hero = () => {
     },
     {
       id: 4,
-      img: "/ferdinand-asakome-REptTTduJxY-unsplash.jpg",
+      img: "https://res.cloudinary.com/dtzesgkf0/image/upload/ferdinand-asakome-REptTTduJxY-unsplash_bdliu9.jpg",
       title: "Trusted Real Estate Experts",
       subtitle:
         "Over a decade of excellence in delivering quality real estate solutions.",
@@ -92,37 +92,6 @@ const Hero = () => {
           </div>
         </div>
       ))}
-
-      {/* Indicators
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-40">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrent(index)}
-            className={`w-3 h-3 rounded-full transition ${
-              index === current ? "bg-amber-500 scale-110" : "bg-white/60"
-            }`}
-          />
-        ))}
-      </div> */}
-
-      {/* Prev/Next Controls
-      <button
-        onClick={() =>
-          setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
-        }
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full z-40"
-      >
-        ‹
-      </button>
-      <button
-        onClick={() =>
-          setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
-        }
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full z-40"
-      >
-        ›
-      </button> */}
     </section>
   );
 };

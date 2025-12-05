@@ -11,7 +11,9 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dashboardOpen, setDashboardOpen] = useState(false); // for mobile dashboard dropdown
   const [moreOpen, setMoreOpen] = useState(false);
-  const avatarUrl = details?.profileImage || "/dp.png";
+  const avatarUrl =
+    details?.profileImage ||
+    "https://res.cloudinary.com/dtzesgkf0/image/upload/user-profile-avatar-login-account-male-user-icon-hd-png-download-lrue3mennq6knv5l_vtfvz8.png";
 
   const dropdownRef = useRef();
   const moreTimeoutRef = useRef(null);
@@ -131,7 +133,7 @@ const Navbar = () => {
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <Link to="/" className="flex items-center">
             <img
-              src="/logo-new-removebg-preview.png"
+              src="https://res.cloudinary.com/dtzesgkf0/image/upload/logo-new-removebg-preview_aenosg.png"
               alt="logo"
               className="h-10 w-auto md:h-12"
             />

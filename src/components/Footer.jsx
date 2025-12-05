@@ -45,7 +45,7 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="/about"
+                  href="/about-us"
                   className="hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 rounded"
                 >
                   About Us

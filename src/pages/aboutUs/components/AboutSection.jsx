@@ -47,7 +47,7 @@ const AboutSection = () => {
         </div>
         <div className="rounded-2xl overflow-hidden shadow-lg">
           <img
-            src="https://res.cloudinary.com/dqzsdgugd/image/upload/v1716806487/LCRNG%20IMAGES/AboutHeroImg1_e4n7qw.png"
+            src="https://res.cloudinary.com/dtzesgkf0/image/upload/WhatsApp_Image_2025-12-02_at_2.26.49_PM_2_vqkfbd.jpg"
             alt="team at work"
             className="w-full h-[28rem] object-cover"
           />

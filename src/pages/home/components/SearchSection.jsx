@@ -11,7 +11,10 @@ const SearchSection = () => {
       {/* 🔹 Search Section */}
       <section
         className="relative text-white py-20 bg-cover bg-center"
-        style={{ backgroundImage: "url('/legal-definition-of-property.jpg')" }} // <-- replace with your image
+        style={{
+          backgroundImage:
+            "url('https://res.cloudinary.com/dtzesgkf0/image/upload/legal-definition-of-property_byuk3e.jpg')",
+        }} // <-- replace with your image
       >
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-green-950/90 via-green-900/80 to-green-800/80"></div>

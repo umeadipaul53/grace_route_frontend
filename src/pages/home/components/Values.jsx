@@ -58,7 +58,7 @@ const Values = () => {
           viewport={{ once: true }}
         >
           <img
-            src="/webaliser-_TPTXZd9mOo-unsplash.jpg"
+            src="https://res.cloudinary.com/dtzesgkf0/image/upload/WhatsApp_Image_2025-12-02_at_2.26.49_PM_1_kjqjb3.jpg"
             alt="Modern House"
             className="rounded-2xl shadow-xl w-full object-cover"
           />

@@ -1,9 +1,6 @@
 // BuyerGuide.jsx
 import React, { useState } from "react";
 import HeroSection from "../components/HeroSection";
-import heroImg from "../assets/hero.jpeg"; // Image 3 (slider)
-import tipsImg from "../assets/tips.jpeg"; // Image 2 (tips section)
-import toolsImg from "../assets/tools.jpeg"; // Image 1 (tools section)
 
 /**
  * Pure React component styled with Tailwind.
@@ -16,37 +13,37 @@ const SLIDES = [
     id: 1,
     title: "Submit Your Property Details",
     text: "Fill out the property submission form by providing accurate information such as property type, location, price, and description. Upload clear images and necessary documents to help us evaluate your listing.",
-    img: "/submit_details.png",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/submit_details_jtebc0.png",
   },
   {
     id: 2,
     title: "Property Verification and Review",
     text: "Once we receive your submission, our verification team reviews all details and documents to ensure the property is legitimate, properly owned, and free from disputes.",
-    img: "/verify-property.jpg",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/verify-property_qdlddk.jpg",
   },
   {
     id: 3,
     title: "Approval and Listing",
     text: "After successful verification, your property is approved and officially added to Grace Route Limited’s property listings, making it visible to thousands of potential buyers on our platform.",
-    img: "/approval_listing.jpg",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/approval_listing_g3dhb3.jpg",
   },
   {
     id: 4,
     title: "Buyer Interest and Negotiation",
     text: "When an interested buyer makes an inquiry or purchase request, our sales team facilitates communication, ensuring a transparent and professional negotiation process between both parties.",
-    img: "/buyers.png",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/buyers_rbws10.png",
   },
   {
     id: 5,
     title: "Agreement and Transaction Finalization",
     text: "Once both parties agree on the sale terms and price, we formalize the agreement. All transactions are processed securely through Grace Route Limited’s trusted payment channels.",
-    img: "/agreement.jpg",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/agreement_udcdcy.jpg",
   },
   {
     id: 6,
     title: "Seller Payment and Deal Closure",
     text: "After the buyer completes payment, the company remits the agreed sale amount to the seller. All documentation and closing processes are completed to ensure a smooth and lawful transfer.",
-    img: "/payment_closure.jpg",
+    img: "https://res.cloudinary.com/dtzesgkf0/image/upload/payment_closure_rlzmtx.jpg",
   },
 ];
 
@@ -71,7 +68,7 @@ function SellProperty() {
         sub_title="Unlock the True Value "
         highlight="of Your Property"
         quote="Your property is more than a space — it’s an opportunity waiting to be maximized."
-        backgroundImage="/career.png"
+        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/services_f1kdbd.png"
       />
       <main className="max-w-6xl mx-auto px-6 py-12 text-slate-900">
         {/* HERO / Slider */}
@@ -164,7 +161,7 @@ function SellProperty() {
             <article className="bg-white rounded-lg shadow overflow-hidden border">
               <div className="h-60 w-full overflow-hidden">
                 <img
-                  src="/patience.jpg"
+                  src="https://res.cloudinary.com/dtzesgkf0/image/upload/patience_ymqwff.jpg"
                   alt="Find the Right Agent"
                   className="object-cover w-full h-full"
                 />
@@ -185,7 +182,7 @@ function SellProperty() {
             <article className="bg-white rounded-lg shadow overflow-hidden border">
               <div className="h-60 w-full overflow-hidden">
                 <img
-                  src="/your_part.jpg"
+                  src="https://res.cloudinary.com/dtzesgkf0/image/upload/your_part_bdp2cg.jpg"
                   alt="Communicate"
                   className="object-cover w-full h-full"
                 />
@@ -206,7 +203,7 @@ function SellProperty() {
             <article className="bg-white rounded-lg shadow overflow-hidden border">
               <div className="h-60 w-full overflow-hidden">
                 <img
-                  src="/ready.png"
+                  src="https://res.cloudinary.com/dtzesgkf0/image/upload/ready_erxmaq.png"
                   alt="Trust the Process"
                   className="object-cover w-full h-full"
                 />
@@ -270,7 +267,7 @@ function SellProperty() {
             <aside className="bg-gradient-to-br from-sky-800 to-sky-700 text-white rounded-lg p-5 shadow-lg flex flex-col items-center justify-center">
               <div className="w-full h-50 mb-4 overflow-hidden rounded-md">
                 <img
-                  src="/here.jpg"
+                  src="https://res.cloudinary.com/dtzesgkf0/image/upload/here_q20yre.jpg"
                   alt="Tools visual"
                   className="object-cover w-full h-full"
                 />

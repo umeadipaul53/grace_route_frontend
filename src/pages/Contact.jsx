@@ -80,7 +80,7 @@ function Contact() {
         sub_title="Let's Build"
         highlight="Your Future Together"
         quote="We’re here to help you find the property that feels like home — contact us today to take the next step."
-        backgroundImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=80"
+        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/career_yzxy5e.png"
       />
 
       <div className="bg-gray-50 py-24">

@@ -28,7 +28,7 @@ const Estates = () => {
         sub_title="Invest Smart. "
         highlight=" Live Better."
         quote="Land is the only asset that never depreciates — start building generational wealth today."
-        backgroundImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=80"
+        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/career_yzxy5e.png"
       />
       <div className="max-w-6xl mx-auto px-4 py-10">
         <h2 className="text-3xl font-bold mb-8 text-gray-800 text-center">

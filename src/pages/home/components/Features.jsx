@@ -50,7 +50,7 @@ const Features = () => {
         </div>
         <div className="rounded-2xl overflow-hidden shadow-lg">
           <img
-            src="/what-we-offer.png"
+            src="https://res.cloudinary.com/dtzesgkf0/image/upload/what-we-offer_envmyv.png"
             alt="what-we-offer"
             className="w-full h-96 object-cover"
           />

@@ -4,32 +4,37 @@ const categories = [
   {
     id: 1,
     title: "Lands",
-    image: "/lands.jpeg",
+    image: "https://res.cloudinary.com/dtzesgkf0/image/upload/lands_gc3trk.jpg",
   },
   {
     id: 2,
     title: "Duplex",
-    image: "/duplex.jpg",
+    image:
+      "https://res.cloudinary.com/dtzesgkf0/image/upload/duplex_xfjt8q.jpg",
   },
   {
     id: 3,
     title: "Bungalow",
-    image: "/Bungalow.jpg",
+    image:
+      "https://res.cloudinary.com/dtzesgkf0/image/upload/Bungalow_bftpkw.jpg",
   },
   {
     id: 4,
     title: "Terraced Duplex",
-    image: "/terraced_duplex.jpg",
+    image:
+      "https://res.cloudinary.com/dtzesgkf0/image/upload/terraced_duplex_geq54o.jpg",
   },
   {
     id: 5,
     title: "Block of Flats",
-    image: "/block_of_flats.jpeg",
+    image:
+      "https://res.cloudinary.com/dtzesgkf0/image/upload/block_of_flats_ugu3hj.jpg",
   },
   {
     id: 6,
     title: "Semi-detached Duplex",
-    image: "/semi-detached.jpg",
+    image:
+      "https://res.cloudinary.com/dtzesgkf0/image/upload/semi-detached_ud4oka.jpg",
   },
 ];
 

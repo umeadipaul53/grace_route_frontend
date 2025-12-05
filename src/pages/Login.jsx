@@ -35,10 +35,6 @@ function Login() {
     }
   }, [isAuthenticated, loading, error, user, navigate]);
 
-  useEffect(() => {
-    console.log("Login state:", { loading, error, isAuthenticated, user });
-  }, [loading, error, isAuthenticated, user]);
-
   // ✅ Show backend errors
   useEffect(() => {
     if (error) {
@@ -79,7 +75,6 @@ function Login() {
     if (!validateForm()) return;
 
     try {
-      console.log("🔹 Sending login request...");
       const result = await dispatch(loginUser(form)).unwrap();
       showToast("Login successful! Redirecting...", "success");
     } catch (err) {
@@ -99,7 +94,7 @@ function Login() {
         sub_title="Secure Login"
         highlight=" to Your Account"
         quote="At Grace Route Limited, your trust and security come first. Log in to safely access your dashboard and manage your property goals with ease."
-        backgroundImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=80"
+        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/career_yzxy5e.png"
       />
 
       <section className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -112,7 +107,7 @@ function Login() {
           {/* Logo */}
           <div className="flex justify-center mb-6">
             <img
-              src="/logo-new-removebg-preview.png"
+              src="https://res.cloudinary.com/dtzesgkf0/image/upload/logo-new-removebg-preview_aenosg.png"
               alt="Grace Route Limited Logo"
               className="h-10"
             />

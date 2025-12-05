@@ -1,39 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Linkedin } from "lucide-react"; // social icons
+import { Linkedin } from "lucide-react";
 import Heading from "../../../components/Heading";
 
 const teamMembers = [
   {
     id: 1,
-    name: "Agida Oladipo",
-    title: "Managing Director / CEO",
-    photoUrl: "/team_1_1.jpg",
+    name: "Chief Godwin Dike Moneke",
+    title: "CEO / Managing Director",
+    photoUrl:
+      "https://res.cloudinary.com/dtzesgkf0/image/upload/profilepics_hiallp.jpg",
     bio: "With 20+ years in real estate leadership, Agida drives the company’s vision and growth.",
-    linkedin: "#",
-  },
-  {
-    id: 2,
-    name: "Femi Mabawonku",
-    title: "Chief Financial Officer",
-    photoUrl: "/team_1_2.jpg",
-    bio: "Femi leads strategic finance, ensuring stability and sustainable expansion.",
-    linkedin: "#",
-  },
-  {
-    id: 3,
-    name: "Alonge Taiwo",
-    title: "Deputy Managing Director",
-    photoUrl: "/team_1_5.png",
-    bio: "Taiwo oversees daily operations and drives organizational excellence.",
-    linkedin: "#",
-  },
-  {
-    id: 4,
-    name: "Grace Odu",
-    title: "Head of Marketing",
-    photoUrl: "https://via.placeholder.com/400x400.png?text=Grace+Odu",
-    bio: "Grace manages brand growth, digital strategy, and customer engagement.",
     linkedin: "#",
   },
 ];
@@ -45,11 +22,11 @@ const TeamCard = ({ member }) => (
     className="relative bg-white rounded-2xl shadow-md overflow-hidden group"
   >
     {/* Image */}
-    <div className="relative w-full h-64">
+    <div className="relative w-full h-auto flex justify-center">
       <img
         src={member.photoUrl}
         alt={member.name}
-        className="w-full h-full object-cover"
+        className="w-full max-w-sm object-contain rounded-2xl"
       />
       {/* Hover overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end justify-center p-4">
@@ -61,6 +38,7 @@ const TeamCard = ({ member }) => (
     <div className="p-5 text-center">
       <h3 className="text-lg font-semibold text-gray-900">{member.name}</h3>
       <p className="text-sm text-gray-500">{member.title}</p>
+
       {member.linkedin && (
         <a
           href={member.linkedin}
@@ -81,16 +59,23 @@ const TeamMembers = () => {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
-          <Heading text="Our Management Team" />
-
+          <Heading text="Our Leadership" />
           <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-            Meet the visionary leaders driving our growth, innovation, and
+            Meet the visionary leader driving our growth, innovation, and
             commitment to excellence.
           </p>
         </div>
 
-        {/* Grid */}
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {/* Grid (auto-center when only 1 member) */}
+        <div
+          className={`grid gap-8 justify-center 
+          ${
+            teamMembers.length === 1
+              ? "grid-cols-1"
+              : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+          }
+        `}
+        >
           {teamMembers.map((member) => (
             <TeamCard key={member.id} member={member} />
           ))}

@@ -51,7 +51,7 @@ const Careers = () => {
         highlight="with Grace Route Limited"
         quote="Join a team where innovation, excellence, and integrity define the
         future of real estate."
-        backgroundImage="/career.png"
+        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/career_yzxy5e.png"
       />
 
       {/* Company Overview Section */}
@@ -106,7 +106,7 @@ const Careers = () => {
           className="md:w-1/2"
         >
           <img
-            src="/istockphoto-1178153976-612x612.jpg"
+            src="https://res.cloudinary.com/dtzesgkf0/image/upload/istockphoto-1178153976-612x612_tzntzf.jpg"
             alt="Team working together"
             className="rounded-3xl shadow-xl"
           />

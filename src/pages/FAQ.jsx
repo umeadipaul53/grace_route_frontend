@@ -90,7 +90,7 @@ function FAQ() {
         quote="At Grace Route Limited, we believe that buying or selling a property should
     be simple, transparent, and stress-free. Our FAQ section is designed to give
     you clarity and confidence every step of the way."
-        backgroundImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=80"
+        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/services_f1kdbd.png"
       />
       <div className="max-w-5xl mx-auto px-4 mt-12 mb-12">
         {/* Section Title */}

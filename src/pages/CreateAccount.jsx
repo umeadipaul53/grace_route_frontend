@@ -100,7 +100,7 @@ function CreateAccount() {
         sub_title="Create "
         highlight=" Your Account"
         quote="Join Grace Route Limited today and take the first step toward your dream property."
-        backgroundImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=80"
+        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/career_yzxy5e.png"
       />
 
       <section className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -113,7 +113,7 @@ function CreateAccount() {
           {/* Logo */}
           <div className="flex justify-center mb-6">
             <img
-              src="/logo-new-removebg-preview.png"
+              src="https://res.cloudinary.com/dtzesgkf0/image/upload/logo-new-removebg-preview_aenosg.png"
               alt="Grace Route Limited Logo"
               className="h-10"
             />

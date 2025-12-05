@@ -11,31 +11,36 @@ const testimonials = [
     name: "Chinedu Okafor",
     role: "Entrepreneur",
     text: "Grace Route Limited made my dream of owning a home in Lagos a reality. From the first consultation to the final paperwork, their team was transparent, professional, and supportive. I never had to worry about hidden costs or delays. Truly reliable!",
-    image: "/testimonial5.jpeg",
+    image:
+      "https://res.cloudinary.com/dtzesgkf0/image/upload/testimonial5_ucltrr.jpg",
   },
   {
     name: "Frank Chibuzor",
     role: "Trader",
     text: "As a first-time buyer, I was nervous about investing in property. Grace Route patiently guided me through every step, answered all my questions, and helped me secure a safe and affordable plot in Anambra. I feel secure knowing I made the right choice.",
-    image: "/testimonial3.jpg",
+    image:
+      "https://res.cloudinary.com/dtzesgkf0/image/upload/testimonial3_zitjnb.jpg",
   },
   {
     name: "Grace Daniel",
     role: "Banker",
     text: "What impressed me most was their integrity. In a market where trust is often lacking, Grace Route stands out. They delivered exactly what they promised, and my family is now settled in a beautiful home in Awka. Highly recommended.",
-    image: "/testimonial.jpeg",
+    image:
+      "https://res.cloudinary.com/dtzesgkf0/image/upload/testimonial_tpkphj.jpg",
   },
   {
     name: "Ngozi Eze",
     role: "Business woman",
     text: "Investing in real estate used to feel complicated, but Grace Route made it simple. Their team handled everything smoothly and gave me clear updates. Today, my property investment is already appreciating in value. I couldn’t be happier",
-    image: "/testimonial4.jpeg",
+    image:
+      "https://res.cloudinary.com/dtzesgkf0/image/upload/testimonial4_shquo3.jpg",
   },
   {
     name: "Emmanuel Osy",
     role: "Engineer",
     text: "From professionalism to customer care, Grace Route Properties is top-notch. They helped me acquire land in Isu aniocha without stress, and even supported me with the building process. I recommend them to anyone serious about safe real estate investment in Nigeria.",
-    image: "/testimonial2.jpeg",
+    image:
+      "https://res.cloudinary.com/dtzesgkf0/image/upload/testimonial2_nkkmpc.jpg",
   },
 ];
 

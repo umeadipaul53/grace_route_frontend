@@ -14,7 +14,7 @@ function About() {
         sub_title="Trust &"
         highlight="Integrity"
         quote="We don’t just build houses; we build lasting relationships founded on trust, transparency, and excellence."
-        backgroundImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=80"
+        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/services_f1kdbd.png"
       />
       <AboutSection />
       <Results />

@@ -26,7 +26,7 @@ const Inspection = () => {
         {/* Right / Image */}
         <div className="mt-6 md:mt-0 md:ml-8 flex-shrink-0">
           <img
-            src="/inspection.png"
+            src="https://res.cloudinary.com/dtzesgkf0/image/upload/inspection_yxuqkm.png"
             alt="Agent Thumbs Up"
             className="w-32 md:w-100 object-contain"
           />

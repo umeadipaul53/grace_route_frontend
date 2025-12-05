@@ -60,7 +60,7 @@ const WhyUs = () => {
         {/* Left Image */}
         <div className="rounded-2xl overflow-hidden shadow-lg">
           <img
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
+            src="https://res.cloudinary.com/dtzesgkf0/image/upload/WhatsApp_Image_2025-12-02_at_2.26.49_PM_3_wvthsj.jpg"
             alt="Modern House"
             className="w-full h-full object-cover"
           />
