@@ -2,6 +2,7 @@ import React from "react";
 import { Building2, Home, Users, Map, BookOpen, Megaphone } from "lucide-react";
 import { motion } from "framer-motion";
 import HeroSection from "../components/HeroSection";
+import { Helmet } from "react-helmet";
 
 const services = [
   {
@@ -55,64 +56,75 @@ const services = [
 
 const Services = () => {
   return (
-    <div>
-      <HeroSection
-        title="Our Services"
-        sub_title="What we "
-        highlight="offer"
-        quote="At Grace Route Limited, we don’t just offer real estate services — we deliver lasting value, trusted partnerships, and opportunities that help our clients achieve their dreams with confidence and class."
-        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/services_f1kdbd.png"
-      />
-      <section className="py-20 bg-gray-50 dark:bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.h2
-            className="text-4xl md:text-5xl font-bold text-center text-green-950 dark:text-white mb-4"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            Our Services
-          </motion.h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-yellow-500 via-amber-600 to-yellow-500 mx-auto mb-16 rounded-full"></div>
+    <>
+      <Helmet>
+        <title>
+          Our Services – Property Sales, Estate Development & Management
+        </title>
+        <meta
+          name="description"
+          content="Explore our real estate services including buying and selling property, facility management, estate development, land banking and property investment."
+        />
+      </Helmet>
+      <div>
+        <HeroSection
+          title="Our Services"
+          sub_title="What we "
+          highlight="offer"
+          quote="At Grace Route Limited, we don’t just offer real estate services — we deliver lasting value, trusted partnerships, and opportunities that help our clients achieve their dreams with confidence and class."
+          backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/services_f1kdbd.png"
+        />
+        <section className="py-20 bg-gray-50 dark:bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <motion.h2
+              className="text-4xl md:text-5xl font-bold text-center text-green-950 dark:text-white mb-4"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              Our Services
+            </motion.h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-yellow-500 via-amber-600 to-yellow-500 mx-auto mb-16 rounded-full"></div>
 
-          <div className="space-y-24">
-            {services.map((service, index) => (
-              <motion.div
-                key={index}
-                className={`flex flex-col md:flex-row items-center gap-10 ${
-                  index % 2 !== 0 ? "md:flex-row-reverse" : ""
-                }`}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-              >
-                {/* Image Section */}
-                <div className="md:w-1/2 overflow-hidden rounded-2xl shadow-lg">
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    className="w-full h-[400px] object-cover transform hover:scale-105 transition duration-500"
-                  />
-                </div>
-
-                {/* Text Section */}
-                <div className="md:w-1/2">
-                  <div className="flex items-center mb-4">
-                    {service.icon}
-                    <h3 className="ml-4 text-2xl font-semibold text-gray-900 dark:text-white">
-                      {service.title}
-                    </h3>
+            <div className="space-y-24">
+              {services.map((service, index) => (
+                <motion.div
+                  key={index}
+                  className={`flex flex-col md:flex-row items-center gap-10 ${
+                    index % 2 !== 0 ? "md:flex-row-reverse" : ""
+                  }`}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  viewport={{ once: true }}
+                >
+                  {/* Image Section */}
+                  <div className="md:w-1/2 overflow-hidden rounded-2xl shadow-lg">
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      className="w-full h-[400px] object-cover transform hover:scale-105 transition duration-500"
+                    />
                   </div>
-                  <p className="text-gray-700 dark:text-gray-800 leading-relaxed text-lg">
-                    {service.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+
+                  {/* Text Section */}
+                  <div className="md:w-1/2">
+                    <div className="flex items-center mb-4">
+                      {service.icon}
+                      <h3 className="ml-4 text-2xl font-semibold text-gray-900 dark:text-white">
+                        {service.title}
+                      </h3>
+                    </div>
+                    <p className="text-gray-700 dark:text-gray-800 leading-relaxed text-lg">
+                      {service.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </>
   );
 };
 

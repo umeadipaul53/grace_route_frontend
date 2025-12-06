@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getEstates } from "../reducers/estateReducer";
 import { MapPin, Layers } from "lucide-react";
 import HeroSection from "../components/HeroSection";
+import { Helmet } from "react-helmet";
 
 const Estates = () => {
   const dispatch = useDispatch();
@@ -58,72 +59,85 @@ const EstateRow = ({ estate }) => {
   } = estate;
 
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden flex flex-col md:flex-row items-stretch">
-      {/* Image section */}
-      <div className="md:w-1/2 w-full bg-gray-100 flex items-center justify-center">
-        <img
-          src={images?.[0]?.url}
-          alt={images?.[0]?.public_id}
-          className="w-full h-full object-contain rounded-md"
+    <>
+      <Helmet>
+        <title>Our Estates – Grace Route Ltd</title>
+        <meta
+          name="description"
+          content="Explore all Grace Route Ltd estates located across Nigeria, including developed and ongoing real estate projects."
         />
-      </div>
+      </Helmet>
+      <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden flex flex-col md:flex-row items-stretch">
+        {/* Image section */}
+        <div className="md:w-1/2 w-full bg-gray-100 flex items-center justify-center">
+          <img
+            src={images?.[0]?.url}
+            alt={images?.[0]?.public_id}
+            className="w-full h-full object-contain rounded-md"
+          />
+        </div>
 
-      {/* Details section */}
-      <div className="md:w-1/2 w-full p-6 flex flex-col justify-between">
-        <div>
-          <h3 className="text-2xl font-semibold text-gray-800 mb-2">{name}</h3>
-
-          <div className="flex items-center text-gray-600 text-sm mb-2">
-            <MapPin size={16} className="mr-2 text-blue-600" />
-            {location?.city}, {location?.state}
-          </div>
-
-          <div className="flex items-center text-gray-600 text-sm mb-2">
-            <Layers size={16} className="mr-2 text-blue-600" />
-            {plotSize}
-          </div>
-
-          <div className="flex items-center text-gray-600 text-sm mb-2">
-            <span className="mr-2 text-blue-600 font-bold text-lg">₦</span>
-            <span className="text-blue-600 font-semibold ml-1">
-              {pricePerPlot?.toLocaleString()} per {plotSize}
-            </span>
-          </div>
-          <div className="mt-4 mb-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Key Features:
+        {/* Details section */}
+        <div className="md:w-1/2 w-full p-6 flex flex-col justify-between">
+          <div>
+            <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+              {name}
             </h3>
-            <ul className="list-disc list-inside text-gray-600 space-y-1">
-              {features && features.length > 0 ? (
-                features.map((feature, index) => <li key={index}>{feature}</li>)
-              ) : (
-                <li className="text-gray-400 italic">No features listed</li>
-              )}
-            </ul>
+
+            <div className="flex items-center text-gray-600 text-sm mb-2">
+              <MapPin size={16} className="mr-2 text-blue-600" />
+              {location?.city}, {location?.state}
+            </div>
+
+            <div className="flex items-center text-gray-600 text-sm mb-2">
+              <Layers size={16} className="mr-2 text-blue-600" />
+              {plotSize}
+            </div>
+
+            <div className="flex items-center text-gray-600 text-sm mb-2">
+              <span className="mr-2 text-blue-600 font-bold text-lg">₦</span>
+              <span className="text-blue-600 font-semibold ml-1">
+                {pricePerPlot?.toLocaleString()} per {plotSize}
+              </span>
+            </div>
+            <div className="mt-4 mb-4">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Key Features:
+              </h3>
+              <ul className="list-disc list-inside text-gray-600 space-y-1">
+                {features && features.length > 0 ? (
+                  features.map((feature, index) => (
+                    <li key={index}>{feature}</li>
+                  ))
+                ) : (
+                  <li className="text-gray-400 italic">No features listed</li>
+                )}
+              </ul>
+            </div>
+            <div className="mt-4 mb-4">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Land Title available:
+              </h3>
+              <ul className="list-disc list-inside text-gray-600 space-y-1">
+                {documents && documents.length > 0 ? (
+                  documents.map((document, index) => (
+                    <li key={index}>{document}</li>
+                  ))
+                ) : (
+                  <li className="text-gray-400 italic">No document listed</li>
+                )}
+              </ul>
+            </div>
+            <div
+              className="col-span-3 text-sm text-gray-600"
+              dangerouslySetInnerHTML={{
+                __html: description,
+              }}
+            ></div>
           </div>
-          <div className="mt-4 mb-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Land Title available:
-            </h3>
-            <ul className="list-disc list-inside text-gray-600 space-y-1">
-              {documents && documents.length > 0 ? (
-                documents.map((document, index) => (
-                  <li key={index}>{document}</li>
-                ))
-              ) : (
-                <li className="text-gray-400 italic">No document listed</li>
-              )}
-            </ul>
-          </div>
-          <div
-            className="col-span-3 text-sm text-gray-600"
-            dangerouslySetInnerHTML={{
-              __html: description,
-            }}
-          ></div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import HeroSection from "../components/HeroSection";
 import JoinGraceRouteCard from "../components/JoinUsCard";
+import { Helmet } from "react-helmet";
 
 function FAQItem({ question, answer, index }) {
   const [open, setOpen] = useState(false);
@@ -82,55 +83,64 @@ function FAQ() {
   ];
 
   return (
-    <section className=" bg-gray-50">
-      <HeroSection
-        title="FAQ"
-        sub_title="Got Questions?"
-        highlight=" We’ve Got Answers"
-        quote="At Grace Route Limited, we believe that buying or selling a property should
+    <>
+      <Helmet>
+        <title>FAQs – Grace Route Ltd</title>
+        <meta
+          name="description"
+          content="Find answers to common questions about buying property, selling property, land banking and more at Grace Route Ltd."
+        />
+      </Helmet>
+      <section className=" bg-gray-50">
+        <HeroSection
+          title="FAQ"
+          sub_title="Got Questions?"
+          highlight=" We’ve Got Answers"
+          quote="At Grace Route Limited, we believe that buying or selling a property should
     be simple, transparent, and stress-free. Our FAQ section is designed to give
     you clarity and confidence every step of the way."
-        backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/services_f1kdbd.png"
-      />
-      <div className="max-w-5xl mx-auto px-4 mt-12 mb-12">
-        {/* Section Title */}
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-2xl font-semibold text-gray-800 mb-4 text-center"
-        >
-          Frequently Asked Questions
-        </motion.h2>
+          backgroundImage="https://res.cloudinary.com/dtzesgkf0/image/upload/services_f1kdbd.png"
+        />
+        <div className="max-w-5xl mx-auto px-4 mt-12 mb-12">
+          {/* Section Title */}
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-2xl font-semibold text-gray-800 mb-4 text-center"
+          >
+            Frequently Asked Questions
+          </motion.h2>
 
-        {/* Section Intro */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center text-gray-600 max-w-2xl mx-auto mb-12"
-        >
-          Welcome to our FAQ section where we answer common questions about our
-          services, buying, and selling process. This will give you better
-          insight into what we do at Grace Route Limited.
-        </motion.p>
+          {/* Section Intro */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center text-gray-600 max-w-2xl mx-auto mb-12"
+          >
+            Welcome to our FAQ section where we answer common questions about
+            our services, buying, and selling process. This will give you better
+            insight into what we do at Grace Route Limited.
+          </motion.p>
 
-        {/* FAQ Grid */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {faqs.map((faq, index) => (
-            <FAQItem
-              key={index}
-              index={index}
-              question={faq.question}
-              answer={faq.answer}
-            />
-          ))}
+          {/* FAQ Grid */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {faqs.map((faq, index) => (
+              <FAQItem
+                key={index}
+                index={index}
+                question={faq.question}
+                answer={faq.answer}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-      <JoinGraceRouteCard />
-    </section>
+        <JoinGraceRouteCard />
+      </section>
+    </>
   );
 }
 

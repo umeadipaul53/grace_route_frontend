@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate-sitemap": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -22,6 +23,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-feather": "^2.0.10",
+    "react-helmet": "^6.1.0",
     "react-icons": "^5.5.0",
     "react-quill-new": "^3.6.0",
     "react-redux": "^9.2.0",
@@ -29,6 +31,7 @@
     "react-spinners": "^0.17.0",
     "recharts": "^3.3.0",
     "redux-persist": "^6.0.0",
+    "sitemap": "^9.0.0",
     "sweetalert2": "^11.26.2",
     "swiper": "^12.0.2"
   },

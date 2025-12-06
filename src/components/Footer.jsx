@@ -19,6 +19,7 @@ const Footer = () => {
             <p className="mt-4 text-xs text-gray-400">
               Mon — Fri: 9:00 AM — 6:00 PM
             </p>
+            <p className="mt-4 text-xs text-gray-400">Sat: 9:00 AM — 2:00 PM</p>
           </div>
 
           {/* Navigation Links */}
@@ -120,12 +121,17 @@ const Footer = () => {
               </a>
             </p>
             <p className="text-sm mt-1">
-              Phone:{" "}
-              <a href="tel:+2348012345678" className="hover:text-white">
-                +234 801 234 5678
+              Whatsapp:{" "}
+              <a href="tel:+2347079534899" className="hover:text-white">
+                +234 707 953 4899
               </a>
             </p>
-
+            <p className="text-sm mt-1">
+              Call Line:{" "}
+              <a href="tel:+2347077777426" className="hover:text-white">
+                +234 707 777 7426
+              </a>
+            </p>
             <div className="mt-4 flex space-x-4">
               <a
                 href="https://facebook.com"

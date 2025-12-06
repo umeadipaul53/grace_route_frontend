@@ -14,23 +14,33 @@ import Values from "./components/Values";
 import TeamMembers from "./components/TeamMembers";
 import VisionMission from "./components/VisionMission";
 import EstateSection from "./components/EstateSection";
+import { Helmet } from "react-helmet";
 
 function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 text-slate-900 antialiased">
-      <Hero />
-      <Values />
-      <SearchSection />
-      <Features />
-      <CoreValuesSlide />
-      <EstateSection />
-      <WhyUs />
-      <Highlights />
-      <PropertyListing />
-      <Testimonial />
-      <NewsCard />
-      <PopularSearches />
-    </div>
+    <>
+      <Helmet>
+        <title>Grace Route Ltd – Real Estate, Property & Investment</title>
+        <meta
+          name="description"
+          content="Grace Route Ltd offers premium real estate services in Nigeria, including property sales, estate development, land banking and investment opportunities."
+        />
+      </Helmet>
+      <div className="min-h-screen bg-gray-50 text-slate-900 antialiased">
+        <Hero />
+        <Values />
+        <SearchSection />
+        <Features />
+        <CoreValuesSlide />
+        <EstateSection />
+        <WhyUs />
+        <Highlights />
+        <PropertyListing />
+        <Testimonial />
+        <NewsCard />
+        <PopularSearches />
+      </div>
+    </>
   );
 }
 
