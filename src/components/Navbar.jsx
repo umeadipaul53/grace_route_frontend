@@ -87,8 +87,11 @@ const Navbar = () => {
         <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-4 md:px-6 py-2 space-y-3 md:space-y-0 text-center md:text-left">
           {/* Contact Info */}
           <div className="flex flex-col sm:flex-row sm:space-x-6 text-gold-500">
-            <a href="tel:+2348012345678" className="text-gold block sm:inline">
-              📞 +234 801 234 5678
+            <a href="tel:+2347079534899" className="text-gold block sm:inline">
+              📞 +234 707 953 4899
+            </a>
+            <a href="tel:+2347077777426" className="text-gold block sm:inline">
+              📞 +234 707 777 7426
             </a>
             <a
               href="mailto:info@gracerouteltd.com"

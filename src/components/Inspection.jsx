@@ -13,12 +13,21 @@ const Inspection = () => {
             Let’s Go Inspect Your New Property
           </h2>
           <p className="mt-2 text-lg font-semibold text-white">
-            Call us on:{" "}
+            Whatsapp us on:{" "}
             <a
-              href="tel:08074918900"
+              href="tel:+2347079534899"
               className="underline hover:text-amber-300"
             >
-              08074918900
+              +234 707 953 4899
+            </a>
+          </p>
+          <p className="mt-2 text-lg font-semibold text-white">
+            Call us on:{" "}
+            <a
+              href="tel:+2347077777426"
+              className="underline hover:text-amber-300"
+            >
+              +234 707 777 7426
             </a>
           </p>
         </div>
